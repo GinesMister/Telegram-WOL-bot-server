@@ -4,7 +4,7 @@
   "description": "WebSocket relay server that triggers Wake-On-LAN (WOL) commands on remote local networks",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "node --allow-fs-read=* --allow-fs-write=* --allow-worker=* --allow-child-process --watch --import tsx src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
     "lint": "eslint src/",
