@@ -4,11 +4,11 @@
   "description": "Remotely wake up computers on a local network using Telegram commands, secured by user ID validation.",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "node --allow-fs-read=* --allow-fs-write=* --allow-worker=* --allow-child-process --watch --import tsx src/index.ts",
-    "build": "node --allow-fs-read=* --allow-fs-write=* ./node_modules/typescript/bin/tsc && node --allow-fs-read=* --allow-fs-write=* ./node_modules/copyfiles/copyfiles -u 1 \"src/config.json5\" dist/",
+    "dev": "node --watch --import tsx src/index.ts",
+    "build": "node ./node_modules/typescript/bin/tsc && node ./node_modules/copyfiles/copyfiles --permission --allow-fs-read=* --allow-fs-write=* -u 1 \"src/config.json5\" dist/",
     "start": "node dist/index.js",
-    "lint": "node --allow-fs-read=* ./node_modules/eslint/bin/eslint.js src/",
-    "format": "node --allow-fs-read=* --allow-fs-write=* ./node_modules/prettier/bin/prettier.cjs --write \"src/**/*.{ts,json}\""
+    "lint": "node --permission --allow-fs-read=* ./node_modules/eslint/bin/eslint.js src/",
+    "format": "node --permission --allow-fs-read=* --allow-fs-write=* ./node_modules/prettier/bin/prettier.cjs --write \"src/**/*.{ts,json}\""
   },
   "keywords": [
     "wol",

@@ -1,7 +1,7 @@
 import { Context } from 'telegraf';
 import { authService } from '../services/auth.service';
 
-export const authGuard = () => {
+export const telauthMiddleware = () => {
   return async (ctx: Context, next: () => Promise<void>) => {
     const senderId = ctx.from?.id;
     const senderUsername = ctx.from?.username || ctx.from?.first_name || 'UNKNOWN';
@@ -11,7 +11,7 @@ export const authGuard = () => {
       return;
     }
 
-    if (authService.authByTeluser(senderId)) {
+    if (!authService.authByTeluser(senderId)) {
       console.error(
         `[AuthGuard] 🚨 Attempt access blocked. ` +
           `User: @${senderUsername} (ID: ${senderId}) tried to execute a command.`,

@@ -3,7 +3,10 @@
     devices: [
         {
             macAddress: '',
-            name: '', // Must be unique
+            // Name you want to appear (must be unique)
+            name: '',
+            // Telegram users allowed to wake this device
+            telegramUsersAuthorizedToWake: [''],
         }
     ]
 }
