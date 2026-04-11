@@ -1,13 +1,40 @@
 {
-  "name": "remote-wol-server",
+  "name": "telegram-wol-bot",
   "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
+  "description": "Remotely wake up computers on a local network using Telegram commands, secured by user ID validation.",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node --allow-fs-read=* --allow-fs-write=* --allow-worker=* --allow-child-process --watch --import tsx src/index.ts",
+    "build": "node --allow-fs-read=* --allow-fs-write=* ./node_modules/typescript/bin/tsc && node --allow-fs-read=* --allow-fs-write=* ./node_modules/copyfiles/copyfiles -u 1 \"src/config.json5\" dist/",
+    "start": "node dist/index.js",
+    "lint": "node --allow-fs-read=* ./node_modules/eslint/bin/eslint.js src/",
+    "format": "node --allow-fs-read=* --allow-fs-write=* ./node_modules/prettier/bin/prettier.cjs --write \"src/**/*.{ts,json}\""
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "wol",
+    "wake-on-lan",
+    "express",
+    "api"
+  ],
+  "author": "GinesMister",
   "license": "ISC",
-  "packageManager": "pnpm@10.33.0"
+  "packageManager": "pnpm@10.33.0",
+  "dependencies": {
+    "dotenv": "17.4.0",
+    "json5": "2.2.3",
+    "node-telegram-bot-api": "0.67.0",
+    "wake_on_lan": "1.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/node": "25.5.0",
+    "@types/wake_on_lan": "0.0.33",
+    "copyfiles": "2.4.1",
+    "eslint": "10.1.0",
+    "eslint-config-prettier": "10.1.8",
+    "prettier": "3.8.1",
+    "tsx": "4.21.0",
+    "typescript": "6.0.2",
+    "typescript-eslint": "8.58.0"
+  }
 }
