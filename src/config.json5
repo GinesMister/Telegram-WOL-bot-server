@@ -3,7 +3,7 @@
     devices: [
         {
             macAddress: '',
-            name: '',
+            name: '', // Must be unique
         }
     ]
 }
