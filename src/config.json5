@@ -1,0 +1,9 @@
+{
+    // Devices you want to wake up
+    devices: [
+        {
+            macAddress: '',
+            name: '',
+        }
+    ]
+}
