@@ -1,5 +1,5 @@
 import { Context } from 'telegraf';
-import { telvalidCommands } from '../../telbotFeatures/telvalidCommands.const';
+import { telvalidCommands } from '../../constants/telvalidCommands.const';
 import translationService from '../../services/translation.service';
 
 export const telnotCommandMessageMiddleware = () => {
@@ -18,7 +18,7 @@ export const telnotCommandMessageMiddleware = () => {
     }
 
     const warningMessage = await ctx.reply(
-      translationService.t("error.invalidCommand")
+      ctx.state.t('error.invalidCommand')
     ).catch(e => {
       console.warn(`[NotCommandMessageMiddleware] ⚠️ Unexpected error writing the info message: ${e.description || 'Unknown reason'}`)
     });

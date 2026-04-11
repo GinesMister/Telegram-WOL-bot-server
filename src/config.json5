@@ -1,7 +1,4 @@
 {
-    // Language that will be used in bot messages. Possible values: 'es' or 'en'.
-    languageMessages: '',
-
     // Devices you want to wake up.
     devices: [
         {

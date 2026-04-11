@@ -5,7 +5,7 @@ import path from 'path';
 class TranslationService {
   private isInitialized: boolean = false;
 
-  public async init(): Promise<void> {
+  async init(): Promise<void> {
     if (this.isInitialized) {
       return;
     }
@@ -24,7 +24,7 @@ class TranslationService {
     console.log('Translation service ready.');
   }
 
-  public t(key: string | string[], options?: TOptions): string {
+  t(key: string | string[], options?: TOptions): string {
     if (!this.isInitialized) {
       console.warn('Trying to translate before init');
       return Array.isArray(key) ? key[0] : key;
@@ -32,7 +32,16 @@ class TranslationService {
     return i18next.t(key, options) as string; 
   }
 
-  public async setLanguage(lng: string): Promise<void> {
+  tFixed(lang: string, key: string, options?: TOptions): string {
+    if (!this.isInitialized) {
+      console.warn('Trying to translate before init');
+      return Array.isArray(key) ? key[0] : key;
+    }
+    const t = i18next.getFixedT(lang);
+    return t(key, options);
+  }
+
+  async setLanguage(lng: string): Promise<void> {
     if (this.isInitialized) {
       await i18next.changeLanguage(lng);
     }
