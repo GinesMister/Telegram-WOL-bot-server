@@ -1,5 +1,5 @@
 import { Context } from 'telegraf';
-import { authService } from '../services/auth.service';
+import { authService } from '../../services/auth.service';
 
 export const telauthMiddleware = () => {
   return async (ctx: Context, next: () => Promise<void>) => {

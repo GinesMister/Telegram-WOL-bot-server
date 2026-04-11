@@ -1,12 +1,15 @@
 {
-    // Devices you want to wake up
+    // Language that will be used in bot messages. Possible values: 'es' or 'en'.
+    languageMessages: '',
+
+    // Devices you want to wake up.
     devices: [
         {
             macAddress: '',
-            // Name you want to appear (must be unique)
-            name: '',
+            // Device name (must be unique).
+            nameId: '',
             // Telegram usernames allowed to wake this device. Starts with "@".
             telegramUsernamesAuthorizedToWake: [''],
-        }
+        },
     ]
 }
