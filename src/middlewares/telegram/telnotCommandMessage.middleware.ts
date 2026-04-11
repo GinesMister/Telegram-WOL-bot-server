@@ -1,6 +1,5 @@
 import { Context } from 'telegraf';
 import { telvalidCommands } from '../../constants/telvalidCommands.const';
-import translationService from '../../services/translation.service';
 
 export const telnotCommandMessageMiddleware = () => {
 

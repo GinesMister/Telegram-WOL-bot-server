@@ -1,8 +1,8 @@
 import { Telegraf } from 'telegraf';
 import { BotEvents } from './botEvents';
 import { telauthMiddleware } from '../middlewares/telegram/telauth.middleware';
-import { telcleanChatMiddleware } from '../middlewares/telegram/telcleanChatMiddleware';
-import { telnotCommandMessageMiddleware } from '../middlewares/telegram/telnotCommandMessageMiddleware';
+import { telcleanChatMiddleware } from '../middlewares/telegram/telcleanChat.middleware';
+import { telnotCommandMessageMiddleware } from '../middlewares/telegram/telnotCommandMessage.middleware';
 import { teli18nMiddleware } from '../middlewares/telegram/teli18n.middleware';
 
 export class BotHandler {
