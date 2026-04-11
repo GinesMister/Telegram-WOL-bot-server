@@ -10,13 +10,14 @@ class TranslationService {
       return;
     }
 
+    console.log(__dirname);
     await i18next
       .use(Backend)
       .init({
         fallbackLng: 'en',
         lng: 'es',
         backend: {
-          loadPath: path.join(process.cwd(), 'locales/{{lng}}/{{ns}}.json')
+          loadPath: path.join(__dirname, '/../', process.env.TRANSLATION_ROUTE!, '/{{lng}}/{{ns}}.json')
         }
       });
 
