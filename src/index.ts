@@ -1,19 +1,1 @@
-import express, { Request, Response } from 'express';
 
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.disable('x-powered-by');
-app.use(express.json());
-
-app.get('/health', (req: Request, res: Response) => {
-  res.status(200).json({
-    status: 'ok',
-    message: 'WOL Relay Server is up and running',
-    timestamp: new Date().toISOString(),
-  });
-});
-
-app.listen(PORT, () => {
-  console.log(`Server listening http://localhost:${PORT}`);
-});

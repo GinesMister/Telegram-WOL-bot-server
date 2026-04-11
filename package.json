@@ -1,7 +1,7 @@
 {
-  "name": "remote-wol-server",
+  "name": "telegram-wol-bot",
   "version": "0.0.1",
-  "description": "WebSocket relay server that triggers Wake-On-LAN (WOL) commands on remote local networks",
+  "description": "Remotely wake up computers on a local network using Telegram commands, secured by user ID validation.",
   "main": "dist/index.js",
   "scripts": {
     "dev": "node --allow-fs-read=* --allow-fs-write=* --allow-worker=* --allow-child-process --watch --import tsx src/index.ts",
@@ -21,15 +21,14 @@
   "packageManager": "pnpm@10.33.0",
   "dependencies": {
     "dotenv": "17.4.0",
-    "express": "5.2.1",
     "json5": "2.2.3",
-    "ws": "8.20.0"
+    "node-telegram-bot-api": "0.67.0",
+    "wake_on_lan": "1.0.0"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
-    "@types/express": "5.0.6",
     "@types/node": "25.5.0",
-    "@types/ws": "8.18.1",
+    "@types/wake_on_lan": "0.0.33",
     "copyfiles": "2.4.1",
     "eslint": "10.1.0",
     "eslint-config-prettier": "10.1.8",
