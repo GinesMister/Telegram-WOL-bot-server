@@ -1,7 +1,7 @@
 import { BotHandler } from './telbotFeatures/botHandler';
 
 const botHandler = new BotHandler();
-botHandler.launch();
+botHandler.init();
 botHandler.deployEvents();
 
 console.log('Application running');

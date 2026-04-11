@@ -5,8 +5,8 @@
             macAddress: '',
             // Name you want to appear (must be unique)
             name: '',
-            // Telegram users allowed to wake this device
-            telegramUsersAuthorizedToWake: [''],
+            // Telegram usernames allowed to wake this device. Starts with "@".
+            telegramUsernamesAuthorizedToWake: [''],
         }
     ]
 }

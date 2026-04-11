@@ -15,8 +15,9 @@ export class BotHandler {
     this.gracefulStopWhenExit();
   }
 
-  launch = () => {
+  init = () => {
     this.bot.launch();
+    this.addBotMiddlewares();
     this.isLaunched = true;
   };
 
@@ -24,7 +25,6 @@ export class BotHandler {
     if (!this.isLaunched) {
       throw new Error('bot not launched yet');
     }
-    this.bot.use(telauthMiddleware());
     console.log('Events are being deployed');
     this.botEvents.start();
   };
@@ -36,4 +36,10 @@ export class BotHandler {
     });
     process.once('SIGTERM', () => this.bot.stop('SIGTERM'));
   };
+
+  private addBotMiddlewares = () => {
+    this.bot.use(
+      telauthMiddleware() //, deleteUserMessagesMiddleware()
+    );
+  }
 }
