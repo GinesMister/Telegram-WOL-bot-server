@@ -1,5 +1,5 @@
 import { Context } from 'telegraf';
-import { telvalidCommands } from '../../constants/telvalid-commands.const';
+import { telCommandsArray } from '../../constants/telegram-commands.const';
 
 export const telnotCommandMessageMiddleware = () => {
   return async (ctx: Context, next: () => Promise<void>) => {
@@ -10,7 +10,7 @@ export const telnotCommandMessageMiddleware = () => {
 
     const text = ctx.message.text.trim();
 
-    if (telvalidCommands.find((c) => text === c)) {
+    if (telCommandsArray.find((c) => text === c)) {
       return;
     }
 

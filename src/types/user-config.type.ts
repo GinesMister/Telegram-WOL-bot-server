@@ -1,8 +1,9 @@
 export interface UserConfig {
   devices: Array<{
     macAddress: string;
-    name: string;
-    telegramUsersAuthorizedToWake: Array<string>;
+    ipAddress: string;
+    nameId: string;
+    telegramUsernamesAuthorizedToWake: Array<string>;
   }>;
 
   restrictedCommands: Array<{

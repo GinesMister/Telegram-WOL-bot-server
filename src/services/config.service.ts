@@ -34,6 +34,7 @@ class ConfigService {
         throw new Error(`Syntax error on config JSON5 file`, { cause: error });
       throw error;
     }
+    // TODO: Validate config (like MAC format)
 
     console.log('Config loaded');
   }

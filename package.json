@@ -2,7 +2,7 @@
   "name": "telegram-wol-bot",
   "version": "0.0.1",
   "description": "Remotely wake up computers on a local network using Telegram commands, secured by user ID validation.",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "scripts": {
     "dev": "node --watch --import tsx src/index.ts",
     "build": "node ./node_modules/typescript/bin/tsc && pnpm build:cpAssets",
@@ -16,8 +16,7 @@
   "keywords": [
     "wol",
     "wake-on-lan",
-    "express",
-    "api"
+    "telegram-bot"
   ],
   "author": "GinesMister",
   "license": "ISC",
@@ -27,6 +26,8 @@
     "i18next": "26.0.3",
     "i18next-fs-backend": "2.6.3",
     "json5": "2.2.3",
+    "local-devices": "4.0.0",
+    "ping": "1.0.0",
     "telegraf": "4.16.3",
     "wake_on_lan": "1.0.0"
   },
