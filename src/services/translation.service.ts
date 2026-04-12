@@ -2,6 +2,7 @@ import i18next, { TOptions } from 'i18next';
 import Backend from 'i18next-fs-backend';
 import path from 'path';
 import { DEFAULT_TRANSLATION_ROUTE_FOLDER } from '../constants/relative-routes.const';
+import { parseToStringArray } from '../util/formatter.util';
 
 export class TranslationService {
   private isInitialized: boolean = false;
@@ -11,10 +12,16 @@ export class TranslationService {
       return;
     }
 
-    console.log(__dirname);
+    const envLanguages = process.env.PRELOADED_LANGUAGES;
+    const botLanguages = envLanguages 
+        ? parseToStringArray(envLanguages) 
+        : ['es', 'en'];
+
+
     await i18next.use(Backend).init({
       fallbackLng: 'en',
-      lng: 'es',
+      lng: 'en',
+      preload: botLanguages,
       backend: {
         loadPath: path.join(
           __dirname,
