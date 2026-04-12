@@ -7,6 +7,6 @@ export interface UserConfig {
 
   restrictedCommands: Array<{
     command: string;
-    allowedTelegramUsernamesToExecute: Array<string>;
+    allowedTelegramUsernames: Array<string>;
   }>;
 }

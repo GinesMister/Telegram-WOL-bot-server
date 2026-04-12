@@ -2,6 +2,7 @@
     // Devices you want to wake up
     devices: [
         {
+            // Example input: '00:1a:2b:3c:4d:5e'
             macAddress: '',
             // Used to check if device is waked
             ipAddress: '',
@@ -16,7 +17,7 @@
     restrictedCommands: [
         {
             command: '/syncmacwithip',
-            allowedTelegramUsernamesToExecute: ['all'],
+            allowedTelegramUsernames: ['all'],
         }
     ],
 }

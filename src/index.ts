@@ -3,7 +3,7 @@ import translationService from './services/translation.service';
 import { BotHandler } from './telbot-features/bot-handler';
 
 const wolBotToken = process.env.TELEGRAM_BOT_TOKEN!;
-if (!wolBotToken) throw new Error('Telegram bot token not in .env');
+if (!wolBotToken) throw new Error('TELEGRAM_BOT_TOKEN not in .env');
 const wolBotHandler = new BotHandler(wolBotToken);
 
 wolBotHandler.init();

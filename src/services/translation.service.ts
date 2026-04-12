@@ -22,7 +22,7 @@ export class TranslationService {
       backend: {
         loadPath: path.join(
           __dirname,
-          '/../', // go where index.js/ts are
+          '/../', // go where index.js/ts is
           process.env.TRANSLATION_ROUTE_FOLDER || DEFAULT_TRANSLATION_ROUTE_FOLDER,
           '/{{lng}}/{{ns}}.json',
         ),
