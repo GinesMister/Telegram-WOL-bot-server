@@ -1,6 +1,6 @@
 import configService from './services/config.service';
 import translationService from './services/translation.service';
-import { BotHandler } from './telbot-features/bot-handler';
+import { BotHandler } from './tel-bot-features/bot-handler';
 
 const wolBotToken = process.env.TELEGRAM_BOT_TOKEN!;
 if (!wolBotToken) throw new Error('TELEGRAM_BOT_TOKEN not in .env');

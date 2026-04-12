@@ -1,5 +1,5 @@
 import { Context } from 'telegraf';
-import { telCommandsArray } from '../../constants/telegram-commands.const';
+import { telCommandsArray } from '../../constants/tel-commands.const';
 
 export const telnotCommandMessageMiddleware = () => {
   return async (ctx: Context, next: () => Promise<void>) => {

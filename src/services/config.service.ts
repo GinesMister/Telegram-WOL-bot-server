@@ -3,19 +3,30 @@ import { UserConfig } from '../types/user-config.type';
 import * as fs from 'fs';
 import * as path from 'path';
 import JSON5 from 'json5';
+import {
+  validateIpAddress,
+  validateMacAddress,
+  validateTelegramCommand,
+  validateTelegramUsername,
+  validateUniqueValues,
+} from '../util/validator.util';
 
 class ConfigService {
   private readonly configPath;
+  private readonly configFileName;
+  private readonly baseConfigValidationErrMsg;
   private userConfig: UserConfig | undefined;
 
   constructor() {
     this.configPath = process.env.CONFIG_ROUTE_FILE || DEFAULT_CONFIG_ROUTE_FILE;
+    this.configFileName = this.configPath.split('/').pop();
+    this.baseConfigValidationErrMsg = `Validation ${this.configFileName}:`;
   }
 
   loadConfig() {
     if (!this.configPath.toLowerCase().endsWith('.json5')) {
       throw new Error(
-        `The config file must be JSON5 format. File received: ${this.configPath}`,
+        `${this.baseConfigValidationErrMsg} The config file must be JSON5 format. File received: ${this.configPath}`,
       );
     }
     try {
@@ -27,16 +38,70 @@ class ConfigService {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (error.code === 'ENOENT')
-        throw new Error(`Config file not found in this route: ${this.configPath}`, {
-          cause: error,
-        });
+        throw new Error(
+          `${this.baseConfigValidationErrMsg} Config file not found in this route: ${this.configPath}`,
+          {
+            cause: error,
+          },
+        );
       if (error.name === 'SyntaxError')
-        throw new Error(`Syntax error on config JSON5 file`, { cause: error });
+        throw new Error(
+          `${this.baseConfigValidationErrMsg} Syntax error on config JSON5 file`,
+          { cause: error },
+        );
       throw error;
     }
-    // TODO: Validate config (like MAC format)
+    this.validateConfig();
 
     console.log('Config loaded');
+  }
+
+  private validateConfig() {
+    if (!this.userConfig)
+      throw new Error(
+        '${this.baseConfigValidationErrMsg} Config is not loaded for validation',
+      );
+
+    // Devices
+    if (!validateUniqueValues(this.userConfig.devices.map((d) => d.nameId)))
+      throw new Error(
+        `${this.baseConfigValidationErrMsg} nameId of devices must be uniques`,
+      );
+    for (const device of this.userConfig.devices) {
+      if (!device.nameId || device.nameId === '')
+        throw new Error(
+          `${this.baseConfigValidationErrMsg} devices.nameId cannot be empty`,
+        );
+      if (!validateMacAddress(device.macAddress))
+        throw new Error(
+          `${this.baseConfigValidationErrMsg} devices.macAddress '${device.macAddress ?? ''}' not valid or missing. Valid formats: '00:1a:2b:3c:4d:5e' or '00-1a-2b-3c-4d-5e'`,
+        );
+      if (!validateIpAddress(device.ipAddress))
+        throw new Error(
+          `${this.baseConfigValidationErrMsg} devices.ipAddress '${device.ipAddress ?? ''}' not valid or missing. Valid example: '192.168.1.53'`,
+        );
+      for (const username of device.telegramUsernamesAuthorizedToWake) {
+        if (!validateTelegramUsername(username))
+          throw new Error(
+            `${this.baseConfigValidationErrMsg} devices.telegramUsernamesAuthorizedToWake '${username ?? ''}' not valid or missing. It must be 'all' or starts with '@'`,
+          );
+      }
+    }
+
+    // Restricted commands
+    if (this.userConfig.restrictedCommands)
+      for (const restrictedCommand of this.userConfig.restrictedCommands) {
+        if (!validateTelegramCommand(restrictedCommand.command))
+          throw new Error(
+            `${this.baseConfigValidationErrMsg} restrictedCommands.command '${restrictedCommand.command}' not valid or missing. It must starts with '/', with no whitespaces`,
+          );
+        for (const username of restrictedCommand.allowedTelegramUsernames) {
+          if (!validateTelegramUsername(username))
+            throw new Error(
+              `${this.baseConfigValidationErrMsg} restrictedCommands.allowedTelegramUsernames '${username}' not valid or missing. It must be 'all' or starts with '@'`,
+            );
+        }
+      }
   }
 
   getConfig() {
