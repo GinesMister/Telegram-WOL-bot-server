@@ -20,7 +20,7 @@ export class BotHandler {
     this.bot.launch();
     this.addBotMiddlewares();
     this.isLaunched = true;
-  };
+  }
 
   deployEvents() {
     if (!this.isLaunched) {
@@ -28,7 +28,7 @@ export class BotHandler {
     }
     console.log('Telegram events are being deployed');
     this.botEvents.start();
-  };
+  }
 
   private gracefulStopWhenExit() {
     process.once('SIGINT', () => {
@@ -36,7 +36,7 @@ export class BotHandler {
       console.log('Bot gracefully stopped');
     });
     process.once('SIGTERM', () => this.bot.stop('SIGTERM'));
-  };
+  }
 
   private addBotMiddlewares() {
     this.bot.use(
@@ -45,5 +45,5 @@ export class BotHandler {
       telnotCommandMessageMiddleware(),
       telcleanChatMiddleware(),
     );
-  };
+  }
 }
