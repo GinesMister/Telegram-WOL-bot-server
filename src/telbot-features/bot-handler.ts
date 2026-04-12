@@ -16,21 +16,21 @@ export class BotHandler {
     this.gracefulStopWhenExit();
   }
 
-  init = () => {
+  init() {
     this.bot.launch();
     this.addBotMiddlewares();
     this.isLaunched = true;
   };
 
-  deployEvents = () => {
+  deployEvents() {
     if (!this.isLaunched) {
-      throw new Error('bot not launched yet');
+      throw new Error('Bot not launched yet');
     }
-    console.log('Events are being deployed');
+    console.log('Telegram events are being deployed');
     this.botEvents.start();
   };
 
-  private gracefulStopWhenExit = () => {
+  private gracefulStopWhenExit() {
     process.once('SIGINT', () => {
       this.bot.stop('SIGINT');
       console.log('Bot gracefully stopped');
@@ -38,7 +38,7 @@ export class BotHandler {
     process.once('SIGTERM', () => this.bot.stop('SIGTERM'));
   };
 
-  private addBotMiddlewares = () => {
+  private addBotMiddlewares() {
     this.bot.use(
       telauthMiddleware(),
       teli18nMiddleware(),

@@ -1,12 +1,22 @@
 {
-    // Devices you want to wake up.
+    // Devices you want to wake up
     devices: [
         {
             macAddress: '',
-            // Device name (must be unique).
+            // Used to check if device is waked
+            ipAddress: '',
+            // Alias name (must be unique)
             nameId: '',
-            // Telegram usernames allowed to wake this device. Starts with "@".
-            telegramUsernamesAuthorizedToWake: [''],
+            // Telegram usernames allowed to wake this device. Starts with `@`. 'all' allows all
+            telegramUsernamesAuthorizedToWake: ['all'],
         },
-    ]
+    ],
+
+    // `/start` command wont be never processed as restricted
+    restrictedCommands: [
+        {
+            command: '/syncmacwithip',
+            allowedTelegramUsernamesToExecute: ['all'],
+        }
+    ],
 }

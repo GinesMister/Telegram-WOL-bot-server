@@ -9,7 +9,7 @@
     "build:cpAssets": "pnpm build:cpConfig && pnpm build:cpLocales",
     "build:cpConfig": "copyfiles -u 0 \"config.json5\" dist/",
     "build:cpLocales": "copyfiles -u 0 locales/**/* dist",
-    "start": "node dist/index.js",
+    "start": "node dist/src/index.js",
     "lint": "node --permission --allow-fs-read=* ./node_modules/eslint/bin/eslint.js src/",
     "format": "node --permission --allow-fs-read=* --allow-fs-write=* ./node_modules/prettier/bin/prettier.cjs --write \"src/**/*.{ts,json}\""
   },

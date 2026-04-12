@@ -13,10 +13,7 @@ export class TranslationService {
     }
 
     const envLanguages = process.env.PRELOADED_LANGUAGES;
-    const botLanguages = envLanguages 
-        ? parseToStringArray(envLanguages) 
-        : ['es', 'en'];
-
+    const botLanguages = envLanguages ? parseToStringArray(envLanguages) : ['es', 'en'];
 
     await i18next.use(Backend).init({
       fallbackLng: 'en',
@@ -33,7 +30,7 @@ export class TranslationService {
     });
 
     this.isInitialized = true;
-    console.log('Translation service ready.');
+    console.log('Translation service ready');
   }
 
   t(key: string | string[], options?: TOptions): string {

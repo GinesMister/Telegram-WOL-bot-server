@@ -14,7 +14,7 @@ export const parseToNumericArray = (input: string | undefined): number[] => {
 
 export const parseToStringArray = (input: string | undefined): string[] => {
   if (!input) return [];
-  const result = input.split(',')
+  const result = input.split(',');
 
   if (result.length === 0) {
     throw new Error('Invalid input');

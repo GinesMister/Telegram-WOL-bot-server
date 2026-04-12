@@ -10,7 +10,7 @@ class AuthService {
       throw new Error('Invalid env.ALLOWED_USERS_ID', { cause: e });
     }
     if (this.authorizedTeluserIds.length === 0)
-      throw new Error('env.ALLOWED_USERS_ID must be informed')
+      throw new Error('env.ALLOWED_USERS_ID must be informed');
   }
 
   authByTeluser = (teluserId: number) => {
@@ -18,4 +18,4 @@ class AuthService {
   };
 }
 
-export const authService = new AuthService();
+export default new AuthService();
