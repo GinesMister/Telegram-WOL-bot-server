@@ -7,7 +7,9 @@ export const telauthMiddleware = () => {
     const senderUsername = ctx.from?.username || ctx.from?.first_name || 'UNKNOWN';
 
     if (!senderId) {
-      console.warn('[AuthMiddleware] ⚠️ A Telegram update was received without remittent.');
+      console.warn(
+        '[AuthMiddleware] ⚠️ A Telegram update was received without remittent.',
+      );
       return;
     }
 

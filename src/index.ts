@@ -1,11 +1,13 @@
 import translationService from './services/translation.service';
-import { BotHandler } from './telbotFeatures/botHandler';
+import { BotHandler } from './telbot-features/bot-handler';
 
-const botHandler = new BotHandler();
+const wolBotToken = process.env.TELEGRAM_BOT_TOKEN!;
+if (!wolBotToken) throw new Error('Telegram bot token not in .env');
+const wolBotHandler = new BotHandler(wolBotToken);
 
-botHandler.init();
+wolBotHandler.init();
 
 translationService.init().then(() => {
-    botHandler.deployEvents();
-    console.log('Application running');
+  wolBotHandler.deployEvents();
+  console.log('Application running');
 });

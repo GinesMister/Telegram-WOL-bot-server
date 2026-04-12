@@ -1,19 +1,17 @@
 import { Telegraf } from 'telegraf';
-import { BotEvents } from './botEvents';
-import { telauthMiddleware } from '../middlewares/telegram/telauth.middleware';
-import { telcleanChatMiddleware } from '../middlewares/telegram/telcleanChat.middleware';
-import { telnotCommandMessageMiddleware } from '../middlewares/telegram/telnotCommandMessage.middleware';
-import { teli18nMiddleware } from '../middlewares/telegram/teli18n.middleware';
+import { BotEvents } from './bot-events';
+import { telauthMiddleware } from '../middlewares/telegram/tel-auth.middleware';
+import { telcleanChatMiddleware } from '../middlewares/telegram/tel-clean-chat.middleware';
+import { telnotCommandMessageMiddleware } from '../middlewares/telegram/tel-not-command-message.middleware';
+import { teli18nMiddleware } from '../middlewares/telegram/tel-i18n.middleware';
 
 export class BotHandler {
   private readonly bot: Telegraf;
   private readonly botEvents: BotEvents;
   private isLaunched: boolean = false;
 
-  constructor() {
-    const botToken = process.env.TELEGRAM_BOT_TOKEN!;
-    if (!botToken) throw new Error('Telegram bot token not in .env');
-    this.bot = new Telegraf(botToken);
+  constructor(telbotToken: string) {
+    this.bot = new Telegraf(telbotToken);
     this.botEvents = new BotEvents(this.bot);
     this.gracefulStopWhenExit();
   }
@@ -42,7 +40,10 @@ export class BotHandler {
 
   private addBotMiddlewares = () => {
     this.bot.use(
-      telauthMiddleware(), teli18nMiddleware(), telnotCommandMessageMiddleware(), telcleanChatMiddleware()
+      telauthMiddleware(),
+      teli18nMiddleware(),
+      telnotCommandMessageMiddleware(),
+      telcleanChatMiddleware(),
     );
-  }
+  };
 }
