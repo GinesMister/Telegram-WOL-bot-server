@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import configService from './services/config.service';
 import translationService from './services/translation.service';
 import { BotHandler } from './tel-bot-features/bot-handler';

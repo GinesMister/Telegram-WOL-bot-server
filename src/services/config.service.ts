@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { DEFAULT_CONFIG_ROUTE_FILE } from '../constants/relative-routes.const';
 import { UserConfig } from '../types/user-config.type';
 import * as fs from 'fs';
@@ -18,6 +19,7 @@ class ConfigService {
   private userConfig: UserConfig | undefined;
 
   constructor() {
+    console.debug(process.env.CONFIG_ROUTE_FILE);
     this.configPath = process.env.CONFIG_ROUTE_FILE || DEFAULT_CONFIG_ROUTE_FILE;
     this.configFileName = this.configPath.split('/').pop();
     this.baseConfigValidationErrMsg = `Validation ${this.configFileName}:`;

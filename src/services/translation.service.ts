@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import i18next, { TOptions } from 'i18next';
 import Backend from 'i18next-fs-backend';
 import path from 'path';
