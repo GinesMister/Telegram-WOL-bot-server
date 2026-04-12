@@ -5,11 +5,13 @@
   "main": "dist/src/index.js",
   "scripts": {
     "dev": "node --watch --import tsx src/index.ts",
+    "dev:inspect": "node --max-old-space-size=100 --inspect --watch --import tsx src/index.ts",
     "build": "node ./node_modules/typescript/bin/tsc && pnpm build:cpAssets",
     "build:cpAssets": "pnpm build:cpConfig && pnpm build:cpLocales",
     "build:cpConfig": "copyfiles -u 0 \"config.json5\" dist/",
     "build:cpLocales": "copyfiles -u 0 locales/**/* dist",
     "start": "node dist/src/index.js",
+    "start:limitedMemory": "node --max-old-space-size=100 dist/src/index.js",
     "lint": "node --permission --allow-fs-read=* ./node_modules/eslint/bin/eslint.js src/",
     "format": "node --permission --allow-fs-read=* --allow-fs-write=* ./node_modules/prettier/bin/prettier.cjs --write \"src/**/*.{ts,json}\""
   },

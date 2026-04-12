@@ -17,8 +17,8 @@ export class BotHandler {
   }
 
   init() {
-    this.bot.launch();
     this.addBotMiddlewares();
+    this.bot.launch();
     this.isLaunched = true;
   }
 
