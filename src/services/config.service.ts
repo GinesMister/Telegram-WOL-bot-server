@@ -105,7 +105,9 @@ class ConfigService {
       }
   }
 
-  getConfig() {
+  getConfig(): UserConfig {
+    if (!this.userConfig)
+      throw Error(`Cannot access the config because it is not loaded yet`);
     return this.userConfig;
   }
 }

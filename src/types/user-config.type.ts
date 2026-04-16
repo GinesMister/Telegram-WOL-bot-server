@@ -1,4 +1,6 @@
 export interface UserConfig {
+  initMessage: boolean;
+
   devices: Array<{
     macAddress: string;
     ipAddress: string;

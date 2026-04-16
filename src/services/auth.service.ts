@@ -6,7 +6,9 @@ class AuthService {
 
   constructor() {
     try {
-      this.authorizedTeluserIds = parseToNumericArray(process.env.ALLOWED_TELEGRAM_USERS_ID);
+      this.authorizedTeluserIds = parseToNumericArray(
+        process.env.ALLOWED_TELEGRAM_USERS_ID,
+      );
     } catch (e) {
       throw new Error('Invalid env.ALLOWED_TELEGRAM_USERS_ID', { cause: e });
     }

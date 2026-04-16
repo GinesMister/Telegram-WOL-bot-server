@@ -8,13 +8,18 @@ export abstract class AbstractBotEvents {
 
   constructor(bot: Telegraf) {
     this.bot = bot;
+    this.onInit();
   }
+
+  abstract onInit(): void;
 
   abstract start(): void;
 
   abstract deployEvents(): void;
 
   protected logEvent(eventName: string): void {
-    console.log(`[Bot Event]: Event executed ${eventName} at ${new Date().toISOString()}`);
+    console.log(
+      `[${this.constructor.name}]: Event executed '${eventName}' at ${new Date().toISOString()}`,
+    );
   }
 }

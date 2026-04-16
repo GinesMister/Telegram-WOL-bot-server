@@ -1,4 +1,7 @@
 {
+    // Send a Telegram info message when bot is on
+    initMessage: true,
+
     // Devices you want to wake up
     devices: [
         {
@@ -16,8 +19,9 @@
     // `/start` command wont be never processed as restricted
     restrictedCommands: [
         {
-            command: '/syncmacwithip',
+            command: '/debug',
+            // Telegram usernames allowed to execute this command. Starts with `@`. 'all' allows all
             allowedTelegramUsernames: ['all'],
-        }
+        },
     ],
 }
