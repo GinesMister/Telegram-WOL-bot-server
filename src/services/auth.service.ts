@@ -6,12 +6,12 @@ class AuthService {
 
   constructor() {
     try {
-      this.authorizedTeluserIds = parseToNumericArray(process.env.ALLOWED_USERS_ID);
+      this.authorizedTeluserIds = parseToNumericArray(process.env.ALLOWED_TELEGRAM_USERS_ID);
     } catch (e) {
-      throw new Error('Invalid env.ALLOWED_USERS_ID', { cause: e });
+      throw new Error('Invalid env.ALLOWED_TELEGRAM_USERS_ID', { cause: e });
     }
     if (this.authorizedTeluserIds.length === 0)
-      throw new Error('env.ALLOWED_USERS_ID must be informed');
+      throw new Error('env.ALLOWED_TELEGRAM_USERS_ID must be informed');
   }
 
   authByTeluser = (teluserId: number) => {

@@ -5,7 +5,7 @@ import path from 'path';
 import { DEFAULT_TRANSLATION_ROUTE_FOLDER } from '../constants/relative-routes.const';
 import { parseToStringArray } from '../util/formatter.util';
 
-export class TranslationService {
+class TranslationService {
   private isInitialized: boolean = false;
 
   async init(): Promise<void> {

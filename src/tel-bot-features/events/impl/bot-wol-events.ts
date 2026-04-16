@@ -1,14 +1,10 @@
 import { Telegraf, Markup } from 'telegraf';
 import 'dotenv/config';
+import { AbstractBotEvents } from '../bot-events.abstract';
 
-export class BotEvents {
-  private readonly bot: Telegraf;
-
-  constructor(bot: Telegraf) {
-    this.bot = bot;
-  }
-
-  start = () => {
+export class BotWolEvents extends AbstractBotEvents {
+  
+  start() {
     this.bot.start((ctx) => {
       ctx.reply(
         '¡Hola! Bienvenido a nuestro servicio. Por favor, elige una opción del menú:',
@@ -22,4 +18,8 @@ export class BotEvents {
       );
     });
   };
+
+  deployEvents(): void {
+    this.start();
+  }
 }

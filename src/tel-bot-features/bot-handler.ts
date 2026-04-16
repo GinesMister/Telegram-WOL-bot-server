@@ -1,18 +1,18 @@
 import { Telegraf } from 'telegraf';
-import { BotEvents } from './bot-events';
 import { telauthMiddleware } from '../middlewares/telegram/tel-auth.middleware';
 import { telcleanChatMiddleware } from '../middlewares/telegram/tel-clean-chat.middleware';
 import { telnotCommandMessageMiddleware } from '../middlewares/telegram/tel-not-command-message.middleware';
 import { teli18nMiddleware } from '../middlewares/telegram/tel-i18n.middleware';
+import { AbstractBotEvents, BotEvent } from './events/bot-events.abstract';
 
 export class BotHandler {
   private readonly bot: Telegraf;
-  private readonly botEvents: BotEvents;
+  private readonly botEvents: AbstractBotEvents;
   private isLaunched: boolean = false;
 
-  constructor(telbotToken: string) {
+  constructor(telbotToken: string, BotEventClass: BotEvent) {
     this.bot = new Telegraf(telbotToken);
-    this.botEvents = new BotEvents(this.bot);
+    this.botEvents = new BotEventClass(this.bot);
     this.gracefulStopWhenExit();
   }
 
@@ -27,7 +27,7 @@ export class BotHandler {
       throw new Error('Bot not launched yet');
     }
     console.log('Telegram events are being deployed');
-    this.botEvents.start();
+    this.botEvents.deployEvents();
   }
 
   private gracefulStopWhenExit() {

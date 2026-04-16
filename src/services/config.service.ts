@@ -19,7 +19,6 @@ class ConfigService {
   private userConfig: UserConfig | undefined;
 
   constructor() {
-    console.debug(process.env.CONFIG_ROUTE_FILE);
     this.configPath = process.env.CONFIG_ROUTE_FILE || DEFAULT_CONFIG_ROUTE_FILE;
     this.configFileName = this.configPath.split('/').pop();
     this.baseConfigValidationErrMsg = `Validation ${this.configFileName}:`;
@@ -28,7 +27,7 @@ class ConfigService {
   loadConfig() {
     if (!this.configPath.toLowerCase().endsWith('.json5')) {
       throw new Error(
-        `${this.baseConfigValidationErrMsg} The config file must be JSON5 format. File received: ${this.configPath}`,
+        `${this.baseConfigValidationErrMsg} The config file must be JSON5 format. File received: ${this.configFileName}`,
       );
     }
     try {
