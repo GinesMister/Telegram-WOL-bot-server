@@ -1,0 +1,27 @@
+{
+    // Send a Telegram info message when bot is on
+    initMessage: true,
+
+    // Devices you want to wake up
+    devices: [
+        {
+            // Example input: '00:1a:2b:3c:4d:5e'
+            macAddress: '',
+            // Used to check if device is waked
+            ipAddress: '',
+            // Alias name (no whitespaces), must be unique
+            nameId: '',
+            // Telegram usernames allowed to wake this device. Starts with `@`. 'all' allows all
+            telegramUsernamesAuthorizedToWake: ['all'],
+        },
+    ],
+
+    // `/start` command wont be never processed as restricted
+    restrictedCommands: [
+        {
+            command: '/debug',
+            // Telegram usernames allowed to execute this command. Starts with `@`. 'all' allows all
+            allowedTelegramUsernames: ['all'],
+        },
+    ],
+}
