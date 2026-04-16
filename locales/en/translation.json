@@ -1,5 +1,8 @@
 {
-    "error": {
-        "invalid_command": "❌ Invalid command. Type /start to begin."
+    "telegram_bot": {
+        "error": {
+            "invalid_command": "❌ Invalid command. Type /start to begin",
+            "no_devices_in_config": "toDo"
+        }
     }
 }

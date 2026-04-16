@@ -22,12 +22,12 @@ export class BotHandler {
     this.isLaunched = true;
   }
 
-  deployEvents() {
+  enableFeature() {
     if (!this.isLaunched) {
       throw new Error('Bot not launched yet');
     }
-    console.log('Telegram events are being deployed');
-    this.botEvents.deployEvents();
+    console.log(`[BotHandler] Telegram bot events ('${this.botEvents.constructor.name}') are being deployed`);
+    this.botEvents.deployActionsAndEvents();
   }
 
   private gracefulStopWhenExit() {

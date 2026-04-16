@@ -15,7 +15,7 @@ export const telnotCommandMessageMiddleware = () => {
     }
 
     const warningMessage = await ctx
-      .reply(ctx.state.t('error.invalid_command'))
+      .reply(ctx.state.t('telegram_bot.error.invalid_command'))
       .catch((e) => {
         console.warn(
           `[NotCommandMessageMiddleware] ⚠️ Unexpected error writing the info message: ${e.description || 'Unknown reason'}`,

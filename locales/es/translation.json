@@ -1,5 +1,12 @@
 {
-    "error": {
-        "invalid_command": "❌ Comando no válido, escribe /start para iniciar."
+    "telegram_bot": {
+        "error": {
+            "invalid_command": "❌ Comando no válido, escribe /start para iniciar",
+            "no_devices_in_config": "❌ No hay dispositivos para encender en la configuración"
+        },
+        "wol": {
+            "select_wake_device": "Pulsa en el equipo que desea encender",
+            "device": "🖥️ {{name}}"
+        }
     }
 }

@@ -77,7 +77,7 @@ class ConfigService {
         throw new Error(
           `${this.baseConfigValidationErrMsg} devices.macAddress '${device.macAddress ?? ''}' not valid or missing. Valid formats: '00:1a:2b:3c:4d:5e' or '00-1a-2b-3c-4d-5e'`,
         );
-      if (!validateIpAddress(device.ipAddress))
+      if (device.ipAddress && !validateIpAddress(device.ipAddress))
         throw new Error(
           `${this.baseConfigValidationErrMsg} devices.ipAddress '${device.ipAddress ?? ''}' not valid or missing. Valid example: '192.168.1.53'`,
         );
