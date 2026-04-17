@@ -46,7 +46,6 @@ export class BotWolEvents extends AbstractBotEvents {
 
   private wolButtonsAction() {
     this.bot.action(/^wake_([^|]+)\|(.+)$/, async (ctx) => {
-
       const requestedNameId = ctx.match[1];
       const sessionString = ctx.match[2];
 

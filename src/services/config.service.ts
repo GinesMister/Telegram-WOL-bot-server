@@ -40,7 +40,7 @@ class ConfigService {
     } catch (error: any) {
       if (error.code === 'ENOENT')
         throw new Error(
-          `${this.baseConfigValidationErrMsg} Config file not found in this route: ${this.configPath}`,
+          `${this.baseConfigValidationErrMsg} Config file not found in this route (from index.js): ${this.configPath}`,
           {
             cause: error,
           },
