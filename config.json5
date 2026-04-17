@@ -21,7 +21,7 @@
         {
             command: '/debug',
             // Telegram usernames allowed to execute this command. Starts with `@`. 'all' allows all
-            allowedTelegramUsernames: ['all'],
+            allowedTelegramUsernames: [''],
         },
     ],
 }

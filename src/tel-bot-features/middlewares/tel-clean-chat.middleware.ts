@@ -4,7 +4,7 @@ export const telcleanChatMiddleware = () => {
   return async (ctx: Context, next: () => Promise<void>) => {
     await next();
 
-    if (ctx.message && 'message_id' in ctx.message) {
+    if (ctx.message && 'message_id' in ctx.message && !ctx.state.isCommandMessage) {
       await ctx.deleteMessage(ctx.message.message_id).catch((e) =>
         console.warn(
           `[CleanChatMiddleware] ⚠️ Unable to delete message (ID: ${ctx.message!.message_id}):

@@ -15,6 +15,7 @@ export class BotWolEvents extends AbstractBotEvents {
   deployActionsAndEvents(): void {
     this.startEvent();
     this.debugEvent();
+    this.wolButtonsAction();
   }
 
   startEvent() {
@@ -41,8 +42,9 @@ export class BotWolEvents extends AbstractBotEvents {
         Markup.inlineKeyboard(buttons)
       );
     });
+  }
 
-    // Buttons action
+  private wolButtonsAction() {
     this.bot.action(/^wake_([^|]+)\|(.+)$/, async (ctx) => {
       const requestedNameId = ctx.match[1];      
       const sessionString = ctx.match[2];
