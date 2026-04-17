@@ -1,13 +1,13 @@
 {
-    // Send a Telegram info message when bot is on
-    initMessage: true,
+    // The message to send when bot is on. Empty ('') won't send message
+    initMessage: '',
 
     // Devices you want to wake up
     devices: [
         {
             // Example input: '00:1a:2b:3c:4d:5e'
             macAddress: '',
-            // Used to check if device is waked
+            // Used to check if device is waked. Can be empty or not informed
             ipAddress: '',
             // Alias name (no whitespaces), must be unique
             nameId: '',
@@ -21,7 +21,7 @@
         {
             command: '/debug',
             // Telegram usernames allowed to execute this command. Starts with `@`. 'all' allows all
-            allowedTelegramUsernames: ['all'],
+            allowedTelegramUsernames: [''],
         },
     ],
 }

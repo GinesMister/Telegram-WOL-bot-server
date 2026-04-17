@@ -40,7 +40,7 @@ class ConfigService {
     } catch (error: any) {
       if (error.code === 'ENOENT')
         throw new Error(
-          `${this.baseConfigValidationErrMsg} Config file not found in this route: ${this.configPath}`,
+          `${this.baseConfigValidationErrMsg} Config file not found in this route (from index.js): ${this.configPath}`,
           {
             cause: error,
           },
@@ -77,7 +77,7 @@ class ConfigService {
         throw new Error(
           `${this.baseConfigValidationErrMsg} devices.macAddress '${device.macAddress ?? ''}' not valid or missing. Valid formats: '00:1a:2b:3c:4d:5e' or '00-1a-2b-3c-4d-5e'`,
         );
-      if (!validateIpAddress(device.ipAddress))
+      if (device.ipAddress && !validateIpAddress(device.ipAddress))
         throw new Error(
           `${this.baseConfigValidationErrMsg} devices.ipAddress '${device.ipAddress ?? ''}' not valid or missing. Valid example: '192.168.1.53'`,
         );
@@ -109,6 +109,15 @@ class ConfigService {
     if (!this.userConfig)
       throw Error(`Cannot access the config because it is not loaded yet`);
     return this.userConfig;
+  }
+
+  getDevicesByAuthorizedTelUsername(telUsername: string | undefined) {
+    if (!telUsername) return [];
+    return this.getConfig().devices.filter(
+      (d) =>
+        d.telegramUsernamesAuthorizedToWake.includes(`@${telUsername}`) ||
+        d.telegramUsernamesAuthorizedToWake.includes('all'),
+    );
   }
 }
 

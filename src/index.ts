@@ -10,8 +10,8 @@ translationService.init().then(() => {
   const wolBotToken = process.env.TELEGRAM_WOL_BOT_TOKEN!;
   if (!wolBotToken) throw new Error('TELEGRAM_WOL_BOT_TOKEN not in .env');
   const wolBotHandler = new BotHandler(wolBotToken, BotWolEvents);
-  
+
   wolBotHandler.init();
-  wolBotHandler.deployEvents();
+  wolBotHandler.enableFeature();
   console.log('Application running');
 });

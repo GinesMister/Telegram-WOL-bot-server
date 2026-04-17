@@ -3,19 +3,22 @@ import { telCommandsArray } from '../../constants/tel-commands.const';
 
 export const telnotCommandMessageMiddleware = () => {
   return async (ctx: Context, next: () => Promise<void>) => {
-    await next();
     if (!(ctx.message && 'text' in ctx.message)) {
+      await next();
       return;
     }
 
     const text = ctx.message.text.trim();
 
     if (telCommandsArray.find((c) => text === c)) {
+      ctx.state.isCommandMessage = true;
+      await next();
       return;
     }
 
+    await next();
     const warningMessage = await ctx
-      .reply(ctx.state.t('error.invalid_command'))
+      .reply(ctx.state.t('telegram_bot.error.invalid_command'))
       .catch((e) => {
         console.warn(
           `[NotCommandMessageMiddleware] ⚠️ Unexpected error writing the info message: ${e.description || 'Unknown reason'}`,
