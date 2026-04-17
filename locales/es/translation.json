@@ -1,12 +1,19 @@
 {
     "telegram_bot": {
+        "global": {
+            "info_get_new_session_message": "💡 Escribe /start para obtener un mensaje actualizado"
+        },
         "error": {
             "invalid_command": "❌ Comando no válido, escribe /start para iniciar",
-            "no_devices_in_config": "❌ No hay dispositivos para encender en la configuración"
+            "no_devices_in_config": "❌ No hay dispositivos para encender en la configuración",
+            "device_not_found_in_config": "❌ Dispositivo no encontrado en la configuración",
+            "other_session_button": "❌ Este mensaje es de otra sesión y está desactualizado",
+            "sending_magic_packet_failed": "❌ Error al intentar enviar la señal WoL"
         },
         "wol": {
-            "select_wake_device": "Pulsa en el equipo que desea encender",
-            "device": "🖥️ {{name}}"
+            "select_wake_device": "Pulsa en el equipo que desea encender 🛎️",
+            "device": "🖥️ {{device}}",
+            "magic_packet_sended": "✅ Magic Packet enviado a {{device}}"
         }
     }
 }

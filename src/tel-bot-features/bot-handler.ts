@@ -26,7 +26,9 @@ export class BotHandler {
     if (!this.isLaunched) {
       throw new Error('Bot not launched yet');
     }
-    console.log(`[BotHandler] Telegram bot events ('${this.botEvents.constructor.name}') are being deployed`);
+    console.log(
+      `[BotHandler] Telegram bot events ('${this.botEvents.constructor.name}') are being deployed`,
+    );
     this.botEvents.deployActionsAndEvents();
   }
 

@@ -110,6 +110,15 @@ class ConfigService {
       throw Error(`Cannot access the config because it is not loaded yet`);
     return this.userConfig;
   }
+
+  getDevicesByAuthorizedTelUsername(telUsername: string | undefined) {
+    if (!telUsername) return [];
+    return this.getConfig().devices.filter(
+      (d) =>
+        d.telegramUsernamesAuthorizedToWake.includes(telUsername) ||
+        d.telegramUsernamesAuthorizedToWake.includes('all'),
+    );
+  }
 }
 
 export default new ConfigService();
