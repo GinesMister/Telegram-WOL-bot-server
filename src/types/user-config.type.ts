@@ -1,5 +1,5 @@
 export interface UserConfig {
-  initMessage: boolean;
+  initMessage: string;
 
   devices: Array<{
     macAddress: string;

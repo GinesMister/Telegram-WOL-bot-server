@@ -1,6 +1,6 @@
 {
-    // Send a Telegram info message when bot is on
-    initMessage: true,
+    // The message to send when bot is on. Empty ('') won't send message
+    initMessage: '',
 
     // Devices you want to wake up
     devices: [

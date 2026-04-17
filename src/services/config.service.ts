@@ -115,7 +115,7 @@ class ConfigService {
     if (!telUsername) return [];
     return this.getConfig().devices.filter(
       (d) =>
-        d.telegramUsernamesAuthorizedToWake.includes(telUsername) ||
+        d.telegramUsernamesAuthorizedToWake.includes(`@${telUsername}`) ||
         d.telegramUsernamesAuthorizedToWake.includes('all'),
     );
   }

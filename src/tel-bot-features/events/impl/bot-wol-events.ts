@@ -6,9 +6,10 @@ import configService from '../../../services/config.service';
 
 export class BotWolEvents extends AbstractBotEvents {
   protected onInit(): void {
-    if (!this.userConfig.initMessage) return;
+    if (!this.userConfig.initMessage || this.userConfig.initMessage === '') return;
+    console.log(`[BotWolEvents] Sending init message...`);
     for (const userId of authService.authorizedTeluserIds) {
-      this.bot.telegram.sendMessage(userId, 'Mock init message');
+      this.bot.telegram.sendMessage(userId, this.userConfig.initMessage);
     }
   }
 
@@ -45,6 +46,7 @@ export class BotWolEvents extends AbstractBotEvents {
 
   private wolButtonsAction() {
     this.bot.action(/^wake_([^|]+)\|(.+)$/, async (ctx) => {
+
       const requestedNameId = ctx.match[1];
       const sessionString = ctx.match[2];
 
@@ -63,7 +65,7 @@ export class BotWolEvents extends AbstractBotEvents {
                     ${e.description || 'Unknown reason'}`,
                 ),
               );
-        }, 5000);
+        }, 10000);
         return ctx.answerCbQuery(ctx.state.t('telegram_bot.error.other_session_button'), {
           show_alert: true,
         });
