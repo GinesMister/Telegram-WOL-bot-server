@@ -1,7 +1,8 @@
 {
     "telegram_bot": {
         "global": {
-            "info_get_new_session_message": "💡 Escribe /start para obtener un mensaje actualizado"
+            "info_get_new_session_message": "💡 Escribe /start para obtener un mensaje actualizado",
+            "command_on_cooldown": "Comando /{{command}} en enfriamiento durante {{secs}} segundos ⌛"
         },
         "error": {
             "invalid_command": "❌ Comando no válido, escribe /start para iniciar",
@@ -13,7 +14,10 @@
         "wol": {
             "select_wake_device": "Pulsa en el equipo que desea encender 🛎️",
             "device": "🖥️ {{device}}",
-            "magic_packet_sended": "✅ Magic Packet enviado a {{device}}"
+            "magic_packet_sended": "✅ Magic Packet enviado a {{device}}",
+            "pinging_device": "Esperando a que {{device}} responda... ⌛",
+            "device_awaked": "{{device}} ya está encendido ⚡",
+            "ping_failed": "{{device}} no ha respondido 😕"
         }
     }
 }

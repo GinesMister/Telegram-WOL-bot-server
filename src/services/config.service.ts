@@ -97,7 +97,7 @@ class ConfigService {
             `${this.baseConfigValidationErrMsg} restrictedCommands.command '${restrictedCommand.command}' not valid or missing. It must starts with '/', with no whitespaces`,
           );
         for (const username of restrictedCommand.allowedTelegramUsernames) {
-          if (!validateTelegramUsername(username))
+          if (username !== '' && !validateTelegramUsername(username))
             throw new Error(
               `${this.baseConfigValidationErrMsg} restrictedCommands.allowedTelegramUsernames '${username}' not valid or missing. It must be 'all' or starts with '@'`,
             );

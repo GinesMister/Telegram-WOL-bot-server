@@ -1,6 +1,7 @@
 export const telCommands = {
-  start: '/start',
-  debug: '/debug',
+  start: 'start',
+  ping: 'ping',
+  debug: 'debug',
 } as const;
 
 export type TelCommandValue = (typeof telCommands)[keyof typeof telCommands];

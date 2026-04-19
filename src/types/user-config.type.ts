@@ -1,5 +1,6 @@
 export interface UserConfig {
   initMessage: string;
+  notificationWhenDeviceIsOn: boolean;
 
   devices: Array<{
     macAddress: string;
@@ -10,6 +11,7 @@ export interface UserConfig {
 
   restrictedCommands: Array<{
     command: string;
+    cooldownSecs: number;
     allowedTelegramUsernames: Array<string>;
   }>;
 }

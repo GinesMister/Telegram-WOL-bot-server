@@ -8,9 +8,9 @@ export const telnotCommandMessageMiddleware = () => {
       return;
     }
 
-    const text = ctx.message.text.trim();
+    const text = ctx.message.text.split(' ');
 
-    if (telCommandsArray.find((c) => text === c)) {
+    if (telCommandsArray.find((c) => text.at(0) === `/${c}`)) {
       ctx.state.isCommandMessage = true;
       await next();
       return;

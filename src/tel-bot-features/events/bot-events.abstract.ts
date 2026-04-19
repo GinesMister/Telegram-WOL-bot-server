@@ -11,7 +11,7 @@ export abstract class AbstractBotEvents {
   protected readonly bot: Telegraf;
   readonly eventSession: string;
   protected readonly userConfig: UserConfig;
-  private commandLastExecute?: { command: TelCommandValue; time: Date };
+  private commandLastExecuteArr: Array<{ command: TelCommandValue; time: Date }> = [];
 
   constructor(bot: Telegraf) {
     this.userConfig = configService.getConfig();
@@ -37,13 +37,20 @@ export abstract class AbstractBotEvents {
     return extractedSession === this.eventSession;
   }
 
-  protected checkDelayedCommand(command: TelCommandValue) {
+  protected checkDelayedCommand(command: TelCommandValue): number {
     const now = new Date();
-    const delayMs = 3000;
+    if (!this.userConfig.restrictedCommands) return 0;
+    const restrictedCommand = this.userConfig.restrictedCommands.find(
+      (c) => c.command === `/${command}`,
+    );
+    if (!restrictedCommand || !restrictedCommand.cooldownSecs) return 0;
+    const delayMs = restrictedCommand.cooldownSecs * 1000;
+    if (!delayMs) return 0;
 
-    if (this.commandLastExecute && this.commandLastExecute.command === command) {
-      const timeElapsed = now.getTime() - this.commandLastExecute.time.getTime();
+    for (const commandLastExecute of this.commandLastExecuteArr) {
+      if (commandLastExecute && commandLastExecute.command !== command) continue;
 
+      const timeElapsed = now.getTime() - commandLastExecute.time.getTime();
       if (timeElapsed < delayMs) {
         const timeLeftMs = delayMs - timeElapsed;
         const secondsLeft = Math.ceil(timeLeftMs / 1000);
@@ -52,13 +59,12 @@ export abstract class AbstractBotEvents {
         );
         return secondsLeft;
       }
+
+      commandLastExecute.time = now;
+      return 0;
     }
 
-    this.commandLastExecute = {
-      command,
-      time: now,
-    };
-
+    this.commandLastExecuteArr.push({ command: command, time: now });
     return 0;
   }
 }

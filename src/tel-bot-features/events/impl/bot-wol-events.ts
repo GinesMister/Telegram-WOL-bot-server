@@ -3,6 +3,8 @@ import { AbstractBotEvents } from '../bot-events.abstract';
 import wolService from '../../../services/wol.service';
 import authService from '../../../services/auth.service';
 import configService from '../../../services/config.service';
+import { deleteMessage, deleteMessageAfter } from '../../../util/tel-messages.util';
+import { telCommands } from '../../../constants/tel-commands.const';
 
 export class BotWolEvents extends AbstractBotEvents {
   protected onInit(): void {
@@ -17,6 +19,7 @@ export class BotWolEvents extends AbstractBotEvents {
     this.startEvent();
     this.debugEvent();
     this.wolButtonsAction();
+    this.pingEvent();
   }
 
   protected startEvent() {
@@ -44,6 +47,44 @@ export class BotWolEvents extends AbstractBotEvents {
     });
   }
 
+  private pingEvent() {
+    this.bot.command(telCommands.ping, (ctx) => {
+      this.logEvent(telCommands.ping);
+      const cooldownSecs = this.checkDelayedCommand(telCommands.ping);
+      if (cooldownSecs > 0) {
+        ctx
+          .reply(
+            ctx.state.t('telegram_bot.global.command_on_cooldown', {
+              command: telCommands.ping,
+              secs: cooldownSecs,
+            }),
+          )
+          .then((r) => deleteMessageAfter(5000, ctx, r.message_id, 'BotWolEvents'))
+          .then(() => deleteMessage(ctx, ctx.message.message_id, 'BotWolEvents'));
+        return;
+      }
+
+      const device = configService
+        .getDevicesByAuthorizedTelUsername(ctx.from?.username)
+        .find((d) => d.nameId === ctx.payload);
+      if (!device) {
+        ctx.reply(ctx.state.t('telegram_bot.error.device_not_found_in_config'));
+        return;
+      }
+      wolService.isDeviceAwake(device?.ipAddress).then((r) => {
+        if (!r) {
+          ctx.reply(
+            ctx.state.t('telegram_bot.wol.ping_failed', { device: device.nameId }),
+          );
+          return;
+        }
+        ctx.reply(
+          ctx.state.t('telegram_bot.wol.device_awaked', { device: device.nameId }),
+        );
+      });
+    });
+  }
+
   private wolButtonsAction() {
     this.bot.action(/^wake_([^|]+)\|(.+)$/, async (ctx) => {
       const requestedNameId = ctx.match[1];
@@ -54,17 +95,7 @@ export class BotWolEvents extends AbstractBotEvents {
         const newSessionMessage = await ctx.reply(
           ctx.state.t('telegram_bot.global.info_get_new_session_message'),
         );
-        setTimeout(() => {
-          if (newSessionMessage)
-            ctx.telegram
-              .deleteMessage(ctx.chat!.id, newSessionMessage.message_id)
-              .catch((e) =>
-                console.warn(
-                  `[BotWolEvents] ⚠️ Unable to delete message (ID: ${newSessionMessage.message_id}):
-                    ${e.description || 'Unknown reason'}`,
-                ),
-              );
-        }, 10000);
+        deleteMessageAfter(10000, ctx, newSessionMessage.message_id, 'BotWolEvents');
         return ctx.answerCbQuery(ctx.state.t('telegram_bot.error.other_session_button'), {
           show_alert: true,
         });
@@ -99,6 +130,46 @@ export class BotWolEvents extends AbstractBotEvents {
           },
         );
       }
+
+      // Auto-ping
+      if (!this.userConfig.notificationWhenDeviceIsOn) return;
+      const waitingPingMessage = ctx.reply(
+        ctx.state.t('telegram_bot.wol.pinging_device', { device: device.nameId }),
+      );
+      setTimeout(() => {
+        const maxAttempts = 20;
+        const pingIntervalMs = 4000;
+        let attempts = 0;
+
+        const pingInterval = setInterval(() => {
+          console.log(`[BotWolEvents] Pinging device with IP '${device.ipAddress}'`);
+          wolService.isDeviceAwake(device.ipAddress).then((r) => {
+            if (!r) return;
+            ctx
+              .reply(
+                ctx.state.t('telegram_bot.wol.device_awaked', { device: device.nameId }),
+              )
+              .then((r) => {
+                deleteMessageAfter(30000, ctx, r.message_id, 'BotWolEvents');
+              });
+            waitingPingMessage.then((r) => {
+              deleteMessage(ctx, r.message_id, '[BotWolEvents]');
+            });
+
+            clearInterval(pingInterval);
+            return;
+          });
+          if (++attempts >= maxAttempts) {
+            waitingPingMessage.then((r) => {
+              deleteMessage(ctx, r.message_id, '[BotWolEvents]');
+            });
+            ctx.reply(
+              ctx.state.t('telegram_bot.wol.ping_failed', { device: device.nameId }),
+            );
+            clearInterval(pingInterval);
+          }
+        }, pingIntervalMs);
+      }, 13000);
     });
   }
 
