@@ -2,7 +2,7 @@
     "telegram_bot": {
         "global": {
             "info_get_new_session_message": "💡 Escribe /start para obtener un mensaje actualizado",
-            "command_on_cooldown": "Comando /{{command}} en enfriamiento durante {{secs}} segundos ⌛"
+            "command_on_cooldown": "Comando /{{command}} en enfriamiento durante {{secs}}s ⌛"
         },
         "error": {
             "invalid_command": "❌ Comando no válido, escribe /start para iniciar",
@@ -17,6 +17,7 @@
             "magic_packet_sended": "✅ Magic Packet enviado a {{device}}",
             "pinging_device": "Esperando a que {{device}} responda... ⌛",
             "device_awaked": "{{device}} ya está encendido ⚡",
+            "device_is_waking": "⚠️ {{device}} se está encendiendo",
             "ping_failed": "{{device}} no ha respondido 😕"
         }
     }

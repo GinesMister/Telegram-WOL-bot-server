@@ -7,6 +7,8 @@ import { deleteMessage, deleteMessageAfter } from '../../../util/tel-messages.ut
 import { telCommands } from '../../../constants/tel-commands.const';
 
 export class BotWolEvents extends AbstractBotEvents {
+  private wakingDevices: Array<string> = [];
+
   protected onInit(): void {
     if (!this.userConfig.initMessage || this.userConfig.initMessage === '') return;
     console.log(`[BotWolEvents] Sending init message...`);
@@ -114,12 +116,20 @@ export class BotWolEvents extends AbstractBotEvents {
         );
       }
 
+      if (this.wakingDevices.find((d) => d === device.nameId)) {
+        ctx.answerCbQuery(
+          ctx.state.t('telegram_bot.wol.device_is_waking', { device: device.nameId }),
+        );
+        return;
+      }
+
       // WoL
       try {
         await wolService.wakeDevice(device.macAddress);
         await ctx.answerCbQuery(
           ctx.state.t('telegram_bot.wol.magic_packet_sended', { device: device.nameId }),
         );
+        this.wakingDevices.push(device.nameId);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         console.error(error);
@@ -132,7 +142,12 @@ export class BotWolEvents extends AbstractBotEvents {
       }
 
       // Auto-ping
-      if (!this.userConfig.notificationWhenDeviceIsOn) return;
+      if (!this.userConfig.notificationWhenDeviceIsOn) {
+        setTimeout(() => {
+          this.wakingDevices.splice(this.wakingDevices.indexOf(device.nameId));
+        }, 10000);
+        return;
+      }
       const waitingPingMessage = ctx.reply(
         ctx.state.t('telegram_bot.wol.pinging_device', { device: device.nameId }),
       );
@@ -143,11 +158,28 @@ export class BotWolEvents extends AbstractBotEvents {
 
         const pingInterval = setInterval(() => {
           console.log(`[BotWolEvents] Pinging device with IP '${device.ipAddress}'`);
-          wolService.isDeviceAwake(device.ipAddress).then((r) => {
-            if (!r) return;
+          wolService.isDeviceAwake(device.ipAddress).then((pingResult) => {
+            if (!pingResult) {
+              if (++attempts >= maxAttempts) {
+                waitingPingMessage.then((r) => {
+                  deleteMessage(ctx, r.message_id, '[BotWolEvents]');
+                });
+                ctx.reply(
+                  ctx.state.t('telegram_bot.wol.ping_failed', {
+                    device: device.nameId,
+                  }),
+                );
+                this.wakingDevices.splice(this.wakingDevices.indexOf(device.nameId));
+                clearInterval(pingInterval);
+              }
+              return;
+            }
+
             ctx
               .reply(
-                ctx.state.t('telegram_bot.wol.device_awaked', { device: device.nameId }),
+                ctx.state.t('telegram_bot.wol.device_awaked', {
+                  device: device.nameId,
+                }),
               )
               .then((r) => {
                 deleteMessageAfter(30000, ctx, r.message_id, 'BotWolEvents');
@@ -155,19 +187,9 @@ export class BotWolEvents extends AbstractBotEvents {
             waitingPingMessage.then((r) => {
               deleteMessage(ctx, r.message_id, '[BotWolEvents]');
             });
-
+            this.wakingDevices.splice(this.wakingDevices.indexOf(device.nameId));
             clearInterval(pingInterval);
-            return;
           });
-          if (++attempts >= maxAttempts) {
-            waitingPingMessage.then((r) => {
-              deleteMessage(ctx, r.message_id, '[BotWolEvents]');
-            });
-            ctx.reply(
-              ctx.state.t('telegram_bot.wol.ping_failed', { device: device.nameId }),
-            );
-            clearInterval(pingInterval);
-          }
         }, pingIntervalMs);
       }, 13000);
     });
