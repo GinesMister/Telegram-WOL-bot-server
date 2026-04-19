@@ -8,7 +8,7 @@ class WolService {
         if (error) {
           reject(
             new Error(
-              `[WolService]: Error sending WoL to '${macAddress}': ${error.message}`,
+              `[WolService] Error sending WoL to '${macAddress}': ${error.message}`,
             ),
           );
         } else {
@@ -26,7 +26,7 @@ class WolService {
       });
       return res.alive;
     } catch (error) {
-      console.error(`[WolService]: Error pinging to ${ipAddress}:`, error);
+      console.error(`[WolService] Error pinging to ${ipAddress}:`, error);
       return false;
     }
   }

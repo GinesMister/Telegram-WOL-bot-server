@@ -61,7 +61,9 @@ export class BotWolEvents extends AbstractBotEvents {
               secs: cooldownSecs,
             }),
           )
-          .then((r) => deleteMessageAfter(cooldownSecs * 1000, ctx, r.message_id, 'BotWolEvents'))
+          .then((r) =>
+            deleteMessageAfter(cooldownSecs * 1000, ctx, r.message_id, 'BotWolEvents'),
+          )
           .then(() => deleteMessage(ctx, ctx.message.message_id, 'BotWolEvents'));
         return;
       }
@@ -91,10 +93,10 @@ export class BotWolEvents extends AbstractBotEvents {
     this.bot.action(/^wake_([^|]+)\|(.+)$/, async (ctx) => {
       this.logEvent('wake_action');
       const requestedNameId = ctx.match[1];
-      const sessionString = ctx.match[2];
+      const session = ctx.match[2];
 
       // If the button pressed is from an other session message
-      if (!this.checkEventSession(sessionString)) {
+      if (!this.checkEventSession(session)) {
         const newSessionMessage = await ctx.reply(
           ctx.state.t('telegram_bot.global.info_get_new_session_message'),
         );
@@ -152,6 +154,8 @@ export class BotWolEvents extends AbstractBotEvents {
       const waitingPingMessage = ctx.reply(
         ctx.state.t('telegram_bot.wol.pinging_device', { device: device.nameId }),
       );
+
+      const timeToStartPinging = 13000;
       setTimeout(() => {
         const maxAttempts = 20;
         const pingIntervalMs = 4000;
@@ -183,7 +187,7 @@ export class BotWolEvents extends AbstractBotEvents {
                 }),
               )
               .then((r) => {
-                deleteMessageAfter(30000, ctx, r.message_id, 'BotWolEvents');
+                deleteMessageAfter(60000, ctx, r.message_id, 'BotWolEvents');
               });
             waitingPingMessage.then((r) => {
               deleteMessage(ctx, r.message_id, '[BotWolEvents]');
@@ -192,7 +196,7 @@ export class BotWolEvents extends AbstractBotEvents {
             clearInterval(pingInterval);
           });
         }, pingIntervalMs);
-      }, 13000);
+      }, timeToStartPinging);
     });
   }
 

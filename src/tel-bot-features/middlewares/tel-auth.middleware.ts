@@ -14,7 +14,7 @@ export const telauthMiddleware = () => {
     }
 
     if (!authService.authByTeluser(senderId)) {
-      console.error(
+      console.warn(
         `[AuthMiddleware] 🚨 Attempt access blocked. ` +
           `User: @${senderUsername} (ID: ${senderId}) tried to execute a command.`,
       );
