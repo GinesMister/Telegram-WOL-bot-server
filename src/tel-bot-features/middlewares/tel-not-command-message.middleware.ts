@@ -1,5 +1,6 @@
 import { Context } from 'telegraf';
 import { telCommandsArray } from '../../constants/tel-commands.const';
+import { deleteMessageAfter } from '../../util/tel-messages.util';
 
 export const telnotCommandMessageMiddleware = () => {
   return async (ctx: Context, next: () => Promise<void>) => {
@@ -25,17 +26,13 @@ export const telnotCommandMessageMiddleware = () => {
         );
       });
 
-    setTimeout(async () => {
-      if (warningMessage)
-        await ctx.telegram
-          .deleteMessage(ctx.chat!.id, warningMessage.message_id)
-          .catch((e) => {
-            console.warn(
-              `[NotCommandMessageMiddleware] ⚠️ Unable to delete info message: ${e.description || 'Unknown reason'}`,
-            );
-          });
-    }, 5000);
-
+    if (warningMessage)
+      deleteMessageAfter(
+        5000,
+        ctx,
+        warningMessage.message_id,
+        'NotCommandMessageMiddleware',
+      );
     return;
   };
 };

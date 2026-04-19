@@ -196,11 +196,6 @@ export class BotWolEvents extends AbstractBotEvents {
   }
 
   private debugEvent() {
-    this.bot.command('debug', () => {
-      super.logEvent('/debug');
-      wolService.isDeviceAwake('192.168.1.78').then((r) => {
-        console.debug(`Ping result`, { r });
-      });
-    });
+    this.bot.command('debug', () => {});
   }
 }

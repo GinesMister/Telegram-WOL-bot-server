@@ -5,9 +5,9 @@ export const deleteMessageAfter = async (
   ctx: Context,
   messageId: number,
   fromScope: string | undefined,
-) => {
+): Promise<void> => {
   if (!messageId) return;
-  await setTimeout(() => {
+  setTimeout(() => {
     deleteMessage(ctx, messageId, fromScope);
   }, ms);
 };
