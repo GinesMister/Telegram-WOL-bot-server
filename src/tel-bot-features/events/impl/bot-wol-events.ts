@@ -61,7 +61,7 @@ export class BotWolEvents extends AbstractBotEvents {
               secs: cooldownSecs,
             }),
           )
-          .then((r) => deleteMessageAfter(5000, ctx, r.message_id, 'BotWolEvents'))
+          .then((r) => deleteMessageAfter(cooldownSecs * 1000, ctx, r.message_id, 'BotWolEvents'))
           .then(() => deleteMessage(ctx, ctx.message.message_id, 'BotWolEvents'));
         return;
       }
@@ -89,6 +89,7 @@ export class BotWolEvents extends AbstractBotEvents {
 
   private wolButtonsAction() {
     this.bot.action(/^wake_([^|]+)\|(.+)$/, async (ctx) => {
+      this.logEvent('wake_action');
       const requestedNameId = ctx.match[1];
       const sessionString = ctx.match[2];
 

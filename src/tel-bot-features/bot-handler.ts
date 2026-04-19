@@ -1,7 +1,6 @@
 import { Telegraf } from 'telegraf';
 import { telauthMiddleware } from './middlewares/tel-auth.middleware';
-import { telcleanChatMiddleware } from './middlewares/tel-clean-chat.middleware';
-import { telnotCommandMessageMiddleware } from './middlewares/tel-not-command-message.middleware';
+import { telnotAllowedCommandMiddleware } from './middlewares/tel-not-allowed-command.middleware';
 import { teli18nMiddleware } from './middlewares/tel-i18n.middleware';
 import { AbstractBotEvents, BotEvent } from './events/bot-events.abstract';
 
@@ -44,8 +43,7 @@ export class BotHandler {
     this.bot.use(
       telauthMiddleware(),
       teli18nMiddleware(),
-      telnotCommandMessageMiddleware(),
-      telcleanChatMiddleware(),
+      telnotAllowedCommandMiddleware(),
     );
   }
 }

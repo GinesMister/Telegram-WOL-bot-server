@@ -1,8 +1,8 @@
 import { Context } from 'telegraf';
-import { telCommandsArray } from '../../constants/tel-commands.const';
-import { deleteMessageAfter } from '../../util/tel-messages.util';
+import { deleteMessage, deleteMessageAfter } from '../../util/tel-messages.util';
+import configService from '../../services/config.service';
 
-export const telnotCommandMessageMiddleware = () => {
+export const telnotAllowedCommandMiddleware = () => {
   return async (ctx: Context, next: () => Promise<void>) => {
     if (!(ctx.message && 'text' in ctx.message)) {
       await next();
@@ -11,13 +11,16 @@ export const telnotCommandMessageMiddleware = () => {
 
     const text = ctx.message.text.split(' ');
 
-    if (telCommandsArray.find((c) => text.at(0) === `/${c}`)) {
+    if (
+      configService
+        .getCommandsAllowedByTelUsername(ctx.from?.username)
+        .find((c) => text.at(0) === `/${c}`)
+    ) {
       ctx.state.isCommandMessage = true;
       await next();
       return;
     }
 
-    await next();
     const warningMessage = await ctx
       .reply(ctx.state.t('telegram_bot.error.invalid_command'))
       .catch((e) => {
@@ -33,6 +36,10 @@ export const telnotCommandMessageMiddleware = () => {
         warningMessage.message_id,
         'NotCommandMessageMiddleware',
       );
+
+    if (ctx.message && 'message_id' in ctx.message && !ctx.state.isCommandMessage) {
+      await deleteMessage(ctx, ctx.message.message_id, 'CleanChatMiddleware');
+    }
     return;
   };
 };

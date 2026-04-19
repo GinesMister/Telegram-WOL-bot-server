@@ -22,10 +22,15 @@
     // `/start` command wont be never processed as restricted
     restrictedCommands: [
         {
-            command: '/debug',
+            command: '/ping',
             // In seconds
-            cooldownSecs: 5,
+            cooldownSecs: 10,
             // Telegram usernames allowed to execute this command. Starts with `@`. 'all' allows all. Can be empty
+            allowedTelegramUsernames: ['all'],
+        },
+        {
+            command: '/debug',
+            cooldownSecs: 0,
             allowedTelegramUsernames: [''],
         },
     ],

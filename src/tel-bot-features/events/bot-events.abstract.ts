@@ -28,7 +28,7 @@ export abstract class AbstractBotEvents {
 
   protected logEvent(eventName: string): void {
     console.log(
-      `[${this.constructor.name}]: Event executed '${eventName}' at ${new Date().toISOString()}`,
+      `[${this.constructor.name}] Event executed '${eventName}' at ${new Date().toISOString()}`,
     );
   }
 

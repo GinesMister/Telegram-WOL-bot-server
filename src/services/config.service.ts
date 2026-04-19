@@ -11,6 +11,7 @@ import {
   validateTelegramUsername,
   validateUniqueValues,
 } from '../util/validator.util';
+import { telCommandsArray } from '../constants/tel-commands.const';
 
 class ConfigService {
   private readonly configPath;
@@ -118,6 +119,24 @@ class ConfigService {
         d.telegramUsernamesAuthorizedToWake.includes(`@${telUsername}`) ||
         d.telegramUsernamesAuthorizedToWake.includes('all'),
     );
+  }
+
+  getCommandsAllowedByTelUsername(telUsername: string | undefined): Array<string> {
+    if (!telUsername) return [];
+    const notAllowedCommands = this.getConfig()
+      .restrictedCommands.filter(
+        (c) =>
+          !c.allowedTelegramUsernames.includes(`@${telUsername}`) &&
+          !c.allowedTelegramUsernames.includes('all'),
+      )
+      .map((c) => c.command.split(' ').at(0)?.substring(1))
+      .filter((c) => c !== 'start');
+    const allowedCommands = [];
+    for (const command of telCommandsArray) {
+      if (!notAllowedCommands.includes(command)) allowedCommands.push(command);
+    }
+
+    return allowedCommands;
   }
 }
 
