@@ -7,6 +7,7 @@
         "error": {
             "invalid_command": "❌ Comando no válido, escribe /start para iniciar",
             "no_devices_in_config": "❌ No hay dispositivos para encender en la configuración",
+            "no_ip_for_device_in_config": "❌ No hay una IP para poder hacer ping en ese dispositivo",
             "device_not_found_in_config": "❌ Dispositivo no encontrado en la configuración",
             "other_session_button": "❌ Este mensaje es de otra sesión y está desactualizado",
             "sending_magic_packet_failed": "❌ Error al intentar enviar la señal WoL"

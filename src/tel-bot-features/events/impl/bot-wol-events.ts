@@ -75,6 +75,10 @@ export class BotWolEvents extends AbstractBotEvents {
         ctx.reply(ctx.state.t('telegram_bot.error.device_not_found_in_config'));
         return;
       }
+      if (device.ipAddress === '') {
+        ctx.reply(ctx.state.t('telegram_bot.error.no_ip_for_device_in_config'));
+        return;
+      }
       wolService.isDeviceAwake(device?.ipAddress).then((r) => {
         if (!r) {
           ctx.reply(
@@ -145,9 +149,9 @@ export class BotWolEvents extends AbstractBotEvents {
       }
 
       // Auto-ping
-      if (!this.userConfig.notificationWhenDeviceIsOn) {
+      if (!this.userConfig.notificationWhenDeviceIsOn || device.ipAddress === '') {
         setTimeout(() => {
-          this.wakingDevices.splice(this.wakingDevices.indexOf(device.nameId));
+          this.wakingDevices = this.wakingDevices.filter(d => d !== device.nameId);
         }, 10000);
         return;
       }
@@ -174,7 +178,7 @@ export class BotWolEvents extends AbstractBotEvents {
                     device: device.nameId,
                   }),
                 );
-                this.wakingDevices.splice(this.wakingDevices.indexOf(device.nameId));
+                this.wakingDevices = this.wakingDevices.filter(d => d !== device.nameId);
                 clearInterval(pingInterval);
               }
               return;
@@ -192,7 +196,7 @@ export class BotWolEvents extends AbstractBotEvents {
             waitingPingMessage.then((r) => {
               deleteMessage(ctx, r.message_id, '[BotWolEvents]');
             });
-            this.wakingDevices.splice(this.wakingDevices.indexOf(device.nameId));
+            this.wakingDevices = this.wakingDevices.filter(d => d !== device.nameId);
             clearInterval(pingInterval);
           });
         }, pingIntervalMs);
