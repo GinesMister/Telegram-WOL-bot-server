@@ -2,6 +2,9 @@ import { Context } from 'telegraf';
 import { deleteMessage, deleteMessageAfter } from '../../util/tel-messages.util';
 import configService from '../../services/config.service';
 
+/**
+ * Acts as a bouncer for specific bot commands.
+ */
 export const telnotAllowedCommandMiddleware = () => {
   return async (ctx: Context, next: () => Promise<void>) => {
     if (!(ctx.message && 'text' in ctx.message)) {
