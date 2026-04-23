@@ -2,6 +2,9 @@
     // The message to send when bot is on. Empty ('') won't send message
     initMessage: '',
 
+    // After wake a device, the bot will send a message when device is on
+    notificationWhenDeviceIsOn: true,
+
     // Devices you want to wake up
     devices: [
         {
@@ -19,8 +22,15 @@
     // `/start` command wont be never processed as restricted
     restrictedCommands: [
         {
+            command: '/ping',
+            // In seconds
+            cooldownSecs: 10,
+            // Telegram usernames allowed to execute this command. Starts with `@`. 'all' allows all. Can be empty
+            allowedTelegramUsernames: ['all'],
+        },
+        {
             command: '/debug',
-            // Telegram usernames allowed to execute this command. Starts with `@`. 'all' allows all
+            cooldownSecs: 0,
             allowedTelegramUsernames: [''],
         },
     ],

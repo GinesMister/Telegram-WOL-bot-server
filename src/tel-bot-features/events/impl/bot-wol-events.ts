@@ -3,8 +3,21 @@ import { AbstractBotEvents } from '../bot-events.abstract';
 import wolService from '../../../services/wol.service';
 import authService from '../../../services/auth.service';
 import configService from '../../../services/config.service';
+import { deleteMessage, deleteMessageAfter } from '../../../util/tel-messages.util';
+import { telCommands } from '../../../constants/tel-commands.const';
 
+/**
+ * Implements the specific Telegram commands and button actions
+ * required for the Wake-on-LAN functionality.
+ */
 export class BotWolEvents extends AbstractBotEvents {
+  // State tracker to prevent sending multiple Magic Packets or triggering overlapping
+  // ping intervals if a user spams the "Wake" button for the same device.
+  private wakingDevices: Array<string> = [];
+
+  /**
+   * Fired immediately upon class initialization.
+   */
   protected onInit(): void {
     if (!this.userConfig.initMessage || this.userConfig.initMessage === '') return;
     console.log(`[BotWolEvents] Sending init message...`);
@@ -13,58 +26,106 @@ export class BotWolEvents extends AbstractBotEvents {
     }
   }
 
+  /**
+   * Wires up all the Telegraf listeners.
+   */
   deployActionsAndEvents(): void {
     this.startEvent();
     this.debugEvent();
     this.wolButtonsAction();
+    this.pingEvent();
+    this.helpEvent();
+    this.devicesEvent();
   }
 
   protected startEvent() {
     this.bot.start((ctx: Context) => {
       super.logEvent('start');
-
-      const devices = configService.getDevicesByAuthorizedTelUsername(ctx.from?.username);
-      if (devices.length === 0) {
-        return ctx.reply(ctx.state.t('telegram_bot.error.no_devices_in_config'));
-      }
-
-      const buttons = devices.map((device) => {
-        return [
-          Markup.button.callback(
-            ctx.state.t('telegram_bot.wol.device', { device: device.nameId }),
-            `wake_${device.nameId}|${this.eventSession}`,
-          ),
-        ];
-      });
-
-      ctx.reply(
-        ctx.state.t('telegram_bot.wol.select_wake_device'),
-        Markup.inlineKeyboard(buttons),
-      );
+      this.replyCommands(ctx);
+      this.replyDevices(ctx);
     });
   }
 
+  private helpEvent() {
+    this.bot.command(telCommands.help, (ctx) => {
+      this.replyCommands(ctx);
+    });
+  }
+
+  private devicesEvent() {
+    this.bot.command(telCommands.devices, (ctx) => {
+      this.replyDevices(ctx);
+    });
+  }
+
+  /**
+   * Allows users to manually check if a device is online.
+   */
+  private pingEvent() {
+    this.bot.command(telCommands.ping, (ctx) => {
+      this.logEvent(telCommands.ping);
+
+      // Check if the command is on cooldown
+      const cooldownSecs = this.checkDelayedCommand(telCommands.ping);
+      if (cooldownSecs > 0) {
+        ctx
+          .reply(
+            ctx.state.t('telegram_bot.global.command_on_cooldown', {
+              command: telCommands.ping,
+              secs: cooldownSecs,
+            }),
+          )
+          // Clean up the chat history by deleting the cooldown warning and the user's command
+          .then((r) =>
+            deleteMessageAfter(cooldownSecs * 1000, ctx, r.message_id, 'BotWolEvents'),
+          )
+          .then(() => deleteMessage(ctx, ctx.message.message_id, 'BotWolEvents'));
+        return;
+      }
+
+      // Validate the requested device exists and the user is authorized for it
+      const device = configService
+        .getDevicesByAuthorizedTelUsername(ctx.from?.username)
+        .find((d) => d.nameId === ctx.payload);
+      if (!device) {
+        ctx.reply(ctx.state.t('telegram_bot.error.device_not_found_in_config'));
+        return;
+      }
+      if (device.ipAddress === '') {
+        ctx.reply(ctx.state.t('telegram_bot.error.no_ip_for_device_in_config'));
+        return;
+      }
+
+      // Execute the ping and reply with the result
+      wolService.isDeviceAwake(device?.ipAddress).then((r) => {
+        if (!r) {
+          ctx.reply(
+            ctx.state.t('telegram_bot.wol.ping_failed', { device: device.nameId }),
+          );
+          return;
+        }
+        ctx.reply(
+          ctx.state.t('telegram_bot.wol.device_awaked', { device: device.nameId }),
+        );
+      });
+    });
+  }
+
+  /**
+   * Listens for clicks on the inline "Wake" buttons.
+   */
   private wolButtonsAction() {
     this.bot.action(/^wake_([^|]+)\|(.+)$/, async (ctx) => {
+      this.logEvent('wake_action');
       const requestedNameId = ctx.match[1];
-      const sessionString = ctx.match[2];
+      const session = ctx.match[2];
 
       // If the button pressed is from an other session message
-      if (!this.checkEventSession(sessionString)) {
+      if (!this.checkEventSession(session)) {
         const newSessionMessage = await ctx.reply(
           ctx.state.t('telegram_bot.global.info_get_new_session_message'),
         );
-        setTimeout(() => {
-          if (newSessionMessage)
-            ctx.telegram
-              .deleteMessage(ctx.chat!.id, newSessionMessage.message_id)
-              .catch((e) =>
-                console.warn(
-                  `[BotWolEvents] ⚠️ Unable to delete message (ID: ${newSessionMessage.message_id}):
-                    ${e.description || 'Unknown reason'}`,
-                ),
-              );
-        }, 10000);
+        deleteMessageAfter(10000, ctx, newSessionMessage.message_id, 'BotWolEvents');
         return ctx.answerCbQuery(ctx.state.t('telegram_bot.error.other_session_button'), {
           show_alert: true,
         });
@@ -83,12 +144,20 @@ export class BotWolEvents extends AbstractBotEvents {
         );
       }
 
-      // WoL
+      if (this.wakingDevices.find((d) => d === device.nameId)) {
+        ctx.answerCbQuery(
+          ctx.state.t('telegram_bot.wol.device_is_waking', { device: device.nameId }),
+        );
+        return;
+      }
+
+      // --- Wake-on-LAN process ---
       try {
         await wolService.wakeDevice(device.macAddress);
         await ctx.answerCbQuery(
           ctx.state.t('telegram_bot.wol.magic_packet_sended', { device: device.nameId }),
         );
+        this.wakingDevices.push(device.nameId);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         console.error(error);
@@ -99,15 +168,103 @@ export class BotWolEvents extends AbstractBotEvents {
           },
         );
       }
+
+      // --- Auto-ping ---
+      if (!this.userConfig.notificationWhenDeviceIsOn || device.ipAddress === '') {
+        setTimeout(() => {
+          this.wakingDevices = this.wakingDevices.filter((d) => d !== device.nameId);
+        }, 10000);
+        return;
+      }
+      const waitingPingMessage = ctx.reply(
+        ctx.state.t('telegram_bot.wol.pinging_device', { device: device.nameId }),
+      );
+
+      // Wait time for the device to wake
+      const timeToStartPinging = 13000;
+      setTimeout(() => {
+        const maxAttempts = 20;
+        const pingIntervalMs = 4000;
+        let attempts = 0;
+
+        const pingInterval = setInterval(() => {
+          console.log(`[BotWolEvents] Pinging device with IP '${device.ipAddress}'`);
+          wolService.isDeviceAwake(device.ipAddress).then((pingResult) => {
+            if (!pingResult) {
+              if (++attempts >= maxAttempts) {
+                // PC never woke up
+                waitingPingMessage.then((r) => {
+                  deleteMessage(ctx, r.message_id, '[BotWolEvents]');
+                });
+                ctx.reply(
+                  ctx.state.t('telegram_bot.wol.ping_failed', {
+                    device: device.nameId,
+                  }),
+                );
+                this.wakingDevices = this.wakingDevices.filter(
+                  (d) => d !== device.nameId,
+                );
+                clearInterval(pingInterval);
+              }
+              return;
+            }
+
+            // PC woke up
+            ctx
+              .reply(
+                ctx.state.t('telegram_bot.wol.device_awaked', {
+                  device: device.nameId,
+                }),
+              )
+              .then((r) => {
+                // Delete the success message to keep the chat tidy
+                deleteMessageAfter(60000, ctx, r.message_id, 'BotWolEvents');
+              });
+            waitingPingMessage.then((r) => {
+              deleteMessage(ctx, r.message_id, '[BotWolEvents]');
+            });
+            this.wakingDevices = this.wakingDevices.filter((d) => d !== device.nameId);
+            clearInterval(pingInterval);
+          });
+        }, pingIntervalMs);
+      }, timeToStartPinging);
     });
   }
 
   private debugEvent() {
-    this.bot.command('debug', () => {
-      super.logEvent('/debug');
-      wolService.isDeviceAwake('192.168.1.78').then((r) => {
-        console.debug(`Ping result`, { r });
-      });
+    this.bot.command('debug', () => {});
+  }
+
+  /** Helper method to display available commands */
+  private replyCommands(ctx: Context) {
+    ctx.reply(
+      `${ctx.state.t('telegram_bot.global.available_commands')}\n\n` +
+        `${ctx.state.t('telegram_bot.global.command_description.start')}\n` +
+        `${ctx.state.t('telegram_bot.global.command_description.devices')}\n` +
+        `${ctx.state.t('telegram_bot.global.command_description.ping')}\n` +
+        `${ctx.state.t('telegram_bot.global.command_description.help')}`,
+    );
+  }
+
+  /** Helper method to generate inline buttons for each authorized device */
+  private replyDevices(ctx: Context) {
+    const devices = configService.getDevicesByAuthorizedTelUsername(ctx.from?.username);
+    if (devices.length === 0) {
+      return ctx.reply(ctx.state.t('telegram_bot.error.no_devices_in_config'));
+    }
+
+    const buttons = devices.map((device) => {
+      return [
+        Markup.button.callback(
+          ctx.state.t('telegram_bot.wol.device', { device: device.nameId }),
+          `wake_${device.nameId}|${this.eventSession}`,
+        ),
+      ];
     });
+
+    ctx.reply(
+      ctx.state.t('telegram_bot.wol.select_wake_device'),
+      Markup.inlineKeyboard(buttons),
+    );
   }
 }

@@ -11,7 +11,13 @@ import {
   validateTelegramUsername,
   validateUniqueValues,
 } from '../util/validator.util';
+import { telCommandsArray } from '../constants/tel-commands.const';
 
+/**
+ * ConfigService acts as the central source of truth for the bot's configuration.
+ * It handles locating the config file, parsing JSON5 (which allows human-friendly
+ * features like comments), and rigorously validating network and user data.
+ */
 class ConfigService {
   private readonly configPath;
   private readonly configFileName;
@@ -24,6 +30,10 @@ class ConfigService {
     this.baseConfigValidationErrMsg = `Validation ${this.configFileName}:`;
   }
 
+  /**
+   * Reads the configuration file from the filesystem and parses it.
+   * Fails fast and throws descriptive errors if the file is missing or malformed.
+   */
   loadConfig() {
     if (!this.configPath.toLowerCase().endsWith('.json5')) {
       throw new Error(
@@ -57,13 +67,19 @@ class ConfigService {
     console.log('Config loaded');
   }
 
+  /**
+   * Internal method to verify that all provided MACs, IPs, Usernames, and Commands
+   * are correctly formatted. Prevents the bot from trying to wake invalid targets.
+   */
   private validateConfig() {
     if (!this.userConfig)
       throw new Error(
         '${this.baseConfigValidationErrMsg} Config is not loaded for validation',
       );
 
-    // Devices
+    // --- Device Validation ---
+
+    // Ensure no two devices share the same ID, preventing command conflicts
     if (!validateUniqueValues(this.userConfig.devices.map((d) => d.nameId)))
       throw new Error(
         `${this.baseConfigValidationErrMsg} nameId of devices must be uniques`,
@@ -73,14 +89,20 @@ class ConfigService {
         throw new Error(
           `${this.baseConfigValidationErrMsg} devices.nameId cannot be empty`,
         );
+
+      // MAC address is strictly required for Wake-on-LAN to function
       if (!validateMacAddress(device.macAddress))
         throw new Error(
           `${this.baseConfigValidationErrMsg} devices.macAddress '${device.macAddress ?? ''}' not valid or missing. Valid formats: '00:1a:2b:3c:4d:5e' or '00-1a-2b-3c-4d-5e'`,
         );
+
+      // IP address is optional (will be used to ping), but if provided, must be valid
       if (device.ipAddress && !validateIpAddress(device.ipAddress))
         throw new Error(
           `${this.baseConfigValidationErrMsg} devices.ipAddress '${device.ipAddress ?? ''}' not valid or missing. Valid example: '192.168.1.53'`,
         );
+
+      // Check that the usernames allowed to wake this specific device are correctly formatted
       for (const username of device.telegramUsernamesAuthorizedToWake) {
         if (!validateTelegramUsername(username))
           throw new Error(
@@ -89,7 +111,8 @@ class ConfigService {
       }
     }
 
-    // Restricted commands
+    // --- Restricted commands ---
+
     if (this.userConfig.restrictedCommands)
       for (const restrictedCommand of this.userConfig.restrictedCommands) {
         if (!validateTelegramCommand(restrictedCommand.command))
@@ -97,7 +120,7 @@ class ConfigService {
             `${this.baseConfigValidationErrMsg} restrictedCommands.command '${restrictedCommand.command}' not valid or missing. It must starts with '/', with no whitespaces`,
           );
         for (const username of restrictedCommand.allowedTelegramUsernames) {
-          if (!validateTelegramUsername(username))
+          if (username !== '' && !validateTelegramUsername(username))
             throw new Error(
               `${this.baseConfigValidationErrMsg} restrictedCommands.allowedTelegramUsernames '${username}' not valid or missing. It must be 'all' or starts with '@'`,
             );
@@ -105,12 +128,20 @@ class ConfigService {
       }
   }
 
+  /**
+   * Safely retrieves the user config, ensuring it isn't accessed before initialization.
+   */
   getConfig(): UserConfig {
     if (!this.userConfig)
       throw Error(`Cannot access the config because it is not loaded yet`);
     return this.userConfig;
   }
 
+  /**
+   * Filters the device list, returning only the machines the given Telegram user
+   * has permission to interact with.
+   * @param telUsername - The Telegram username (without the @)
+   */
   getDevicesByAuthorizedTelUsername(telUsername: string | undefined) {
     if (!telUsername) return [];
     return this.getConfig().devices.filter(
@@ -118,6 +149,29 @@ class ConfigService {
         d.telegramUsernamesAuthorizedToWake.includes(`@${telUsername}`) ||
         d.telegramUsernamesAuthorizedToWake.includes('all'),
     );
+  }
+
+  /**
+   * Determines which bot commands the specific user is permitted to use,
+   * factoring in any restricted command overrides in the configuration.
+   * @param telUsername - The Telegram username (without the @)
+   */
+  getCommandsAllowedByTelUsername(telUsername: string | undefined): Array<string> {
+    if (!telUsername) return [];
+    const notAllowedCommands = this.getConfig()
+      .restrictedCommands.filter(
+        (c) =>
+          !c.allowedTelegramUsernames.includes(`@${telUsername}`) &&
+          !c.allowedTelegramUsernames.includes('all'),
+      )
+      .map((c) => c.command.split(' ').at(0)?.substring(1))
+      .filter((c) => c !== 'start');
+    const allowedCommands = [];
+    for (const command of telCommandsArray) {
+      if (!notAllowedCommands.includes(command)) allowedCommands.push(command);
+    }
+
+    return allowedCommands;
   }
 }
 
