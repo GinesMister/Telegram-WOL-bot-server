@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "node --watch --import tsx src/index.ts",
     "dev:inspect": "node --max-old-space-size=100 --inspect --watch --import tsx src/index.ts",
-    "build": "node ./node_modules/typescript/bin/tsc && pnpm build:cpAssets",
-    "build:cpAssets": "pnpm build:cpConfig && pnpm build:cpLocales",
+    "build": "node ./node_modules/typescript/bin/tsc && npm run build:cpAssets",
+    "build:cpAssets": "npm run build:cpConfig && npm run build:cpLocales",
     "build:cpConfig": "copyfiles -u 0 \"config.json5\" dist/",
     "build:cpLocales": "copyfiles -u 0 locales/**/* dist",
     "start": "node dist/src/index.js",
