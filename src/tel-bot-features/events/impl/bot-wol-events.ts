@@ -43,7 +43,7 @@ export class BotWolEvents extends AbstractBotEvents {
   private devicesEvent() {
     this.bot.command(telCommands.devices, (ctx) => {
       this.replyDevices(ctx);
-    })
+    });
   }
 
   private pingEvent() {
@@ -148,7 +148,7 @@ export class BotWolEvents extends AbstractBotEvents {
       // Auto-ping
       if (!this.userConfig.notificationWhenDeviceIsOn || device.ipAddress === '') {
         setTimeout(() => {
-          this.wakingDevices = this.wakingDevices.filter(d => d !== device.nameId);
+          this.wakingDevices = this.wakingDevices.filter((d) => d !== device.nameId);
         }, 10000);
         return;
       }
@@ -175,7 +175,9 @@ export class BotWolEvents extends AbstractBotEvents {
                     device: device.nameId,
                   }),
                 );
-                this.wakingDevices = this.wakingDevices.filter(d => d !== device.nameId);
+                this.wakingDevices = this.wakingDevices.filter(
+                  (d) => d !== device.nameId,
+                );
                 clearInterval(pingInterval);
               }
               return;
@@ -193,7 +195,7 @@ export class BotWolEvents extends AbstractBotEvents {
             waitingPingMessage.then((r) => {
               deleteMessage(ctx, r.message_id, '[BotWolEvents]');
             });
-            this.wakingDevices = this.wakingDevices.filter(d => d !== device.nameId);
+            this.wakingDevices = this.wakingDevices.filter((d) => d !== device.nameId);
             clearInterval(pingInterval);
           });
         }, pingIntervalMs);
@@ -207,32 +209,32 @@ export class BotWolEvents extends AbstractBotEvents {
 
   private replyCommands(ctx: Context) {
     ctx.reply(
-      `${ctx.state.t('telegram_bot.global.available_commands')}\n\n`
-      + `${ctx.state.t('telegram_bot.global.command_description.start')}\n`
-      + `${ctx.state.t('telegram_bot.global.command_description.devices')}\n`
-      + `${ctx.state.t('telegram_bot.global.command_description.ping')}\n`
-      + `${ctx.state.t('telegram_bot.global.command_description.help')}`
+      `${ctx.state.t('telegram_bot.global.available_commands')}\n\n` +
+        `${ctx.state.t('telegram_bot.global.command_description.start')}\n` +
+        `${ctx.state.t('telegram_bot.global.command_description.devices')}\n` +
+        `${ctx.state.t('telegram_bot.global.command_description.ping')}\n` +
+        `${ctx.state.t('telegram_bot.global.command_description.help')}`,
     );
   }
 
   private replyDevices(ctx: Context) {
     const devices = configService.getDevicesByAuthorizedTelUsername(ctx.from?.username);
-      if (devices.length === 0) {
-        return ctx.reply(ctx.state.t('telegram_bot.error.no_devices_in_config'));
-      }
+    if (devices.length === 0) {
+      return ctx.reply(ctx.state.t('telegram_bot.error.no_devices_in_config'));
+    }
 
-      const buttons = devices.map((device) => {
-        return [
-          Markup.button.callback(
-            ctx.state.t('telegram_bot.wol.device', { device: device.nameId }),
-            `wake_${device.nameId}|${this.eventSession}`,
-          ),
-        ];
-      });
+    const buttons = devices.map((device) => {
+      return [
+        Markup.button.callback(
+          ctx.state.t('telegram_bot.wol.device', { device: device.nameId }),
+          `wake_${device.nameId}|${this.eventSession}`,
+        ),
+      ];
+    });
 
-      ctx.reply(
-        ctx.state.t('telegram_bot.wol.select_wake_device'),
-        Markup.inlineKeyboard(buttons),
-      );
+    ctx.reply(
+      ctx.state.t('telegram_bot.wol.select_wake_device'),
+      Markup.inlineKeyboard(buttons),
+    );
   }
 }
