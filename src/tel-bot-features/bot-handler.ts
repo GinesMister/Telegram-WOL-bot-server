@@ -6,7 +6,7 @@ import { AbstractBotEvents, BotEvent } from './events/bot-events.abstract';
 
 /**
  * BotHandler is the main orchestrator for the Telegram bot's lifecycle.
- * It manages initialization, the middleware pipeline, event registration, 
+ * It manages initialization, the middleware pipeline, event registration,
  * and safe process termination.
  */
 export class BotHandler {
@@ -25,7 +25,7 @@ export class BotHandler {
   }
 
   /**
-   * Bootstraps the bot by applying global rules (middlewares) and 
+   * Bootstraps the bot by applying global rules (middlewares) and
    * starting the Telegraf polling mechanism to listen for incoming messages.
    */
   init() {
@@ -59,7 +59,7 @@ export class BotHandler {
   }
 
   /**
-   * Registers the middleware pipeline. 
+   * Registers the middleware pipeline.
    * NOTE: The order of insertion here is critical!
    */
   private addBotMiddlewares() {

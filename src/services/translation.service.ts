@@ -57,7 +57,7 @@ class TranslationService {
 
   /**
    * Retrieves a translation locked to a specific language.
-   * Since multiple users might message the bot at the exact 
+   * Since multiple users might message the bot at the exact
    * same time in different languages, this method is useful to give message translated
    * for every user languages.
    * @param lang - The specific language code to use for this translation (e.g., 'es')

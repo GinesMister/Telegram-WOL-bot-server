@@ -3,11 +3,10 @@ import ping from 'ping';
 
 /**
  * WolService is the core hardware-level execution layer.
- * It is responsible for sending the actual UDP broadcast packets (Magic Packets) 
+ * It is responsible for sending the actual UDP broadcast packets (Magic Packets)
  * over the local network and verifying if a machine is responding via ICMP (ping).
  */
 class WolService {
-
   /**
    * Broadcasts a Wake-on-LAN "magic packet" to the local network.
    * @param macAddress - The physical hardware address of the target network card.

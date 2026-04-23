@@ -10,7 +10,7 @@ export type BotEvent = new (bot: Telegraf) => AbstractBotEvents;
 
 /**
  * AbstractBotEvents serves as the base blueprint for all bot command handlers.
- * It provides shared utilities so that child classes can focus 
+ * It provides shared utilities so that child classes can focus
  * purely on the specific logic of their commands.
  */
 export abstract class AbstractBotEvents {

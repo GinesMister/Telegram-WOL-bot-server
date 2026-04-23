@@ -11,7 +11,6 @@ import { telCommands } from '../../../constants/tel-commands.const';
  * required for the Wake-on-LAN functionality.
  */
 export class BotWolEvents extends AbstractBotEvents {
-
   // State tracker to prevent sending multiple Magic Packets or triggering overlapping
   // ping intervals if a user spams the "Wake" button for the same device.
   private wakingDevices: Array<string> = [];
@@ -246,7 +245,7 @@ export class BotWolEvents extends AbstractBotEvents {
         `${ctx.state.t('telegram_bot.global.command_description.help')}`,
     );
   }
-  
+
   /** Helper method to generate inline buttons for each authorized device */
   private replyDevices(ctx: Context) {
     const devices = configService.getDevicesByAuthorizedTelUsername(ctx.from?.username);

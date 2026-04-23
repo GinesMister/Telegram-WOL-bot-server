@@ -3,7 +3,7 @@ import authService from '../../services/auth.service';
 
 /**
  * Acts as the absolute first line of defense for the bot.
- * It intercepts every single incoming message or action before it reaches 
+ * It intercepts every single incoming message or action before it reaches
  * any command handlers.
  */
 export const telauthMiddleware = () => {

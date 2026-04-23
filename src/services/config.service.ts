@@ -15,7 +15,7 @@ import { telCommandsArray } from '../constants/tel-commands.const';
 
 /**
  * ConfigService acts as the central source of truth for the bot's configuration.
- * It handles locating the config file, parsing JSON5 (which allows human-friendly 
+ * It handles locating the config file, parsing JSON5 (which allows human-friendly
  * features like comments), and rigorously validating network and user data.
  */
 class ConfigService {
