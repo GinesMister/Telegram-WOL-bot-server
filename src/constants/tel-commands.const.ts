@@ -1,5 +1,7 @@
 export const telCommands = {
   start: 'start',
+  help: 'help',
+  devices: 'devices',
   ping: 'ping',
   debug: 'debug',
 } as const;

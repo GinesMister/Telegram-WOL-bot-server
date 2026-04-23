@@ -2,7 +2,14 @@
     "telegram_bot": {
         "global": {
             "info_get_new_session_message": "💡 Escribe /start para obtener un mensaje actualizado",
-            "command_on_cooldown": "Comando /{{command}} en enfriamiento durante {{secs}}s ⌛"
+            "command_on_cooldown": "Comando /{{command}} en enfriamiento durante {{secs}}s ⌛",
+            "available_commands": "Comandos disponibles 🛠️",
+            "command_description": {
+                "start": "/start - iniciar el bot",
+                "devices": "/devices - dispositivos para encender",
+                "ping": "/ping {dispositivo} - ping al dispositivo",
+                "help": "/help - comandos disponibles"
+            }
         },
         "error": {
             "invalid_command": "❌ Comando no válido, escribe /start para iniciar",
