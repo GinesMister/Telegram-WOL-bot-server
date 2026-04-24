@@ -75,7 +75,6 @@ export class BotWolEvents extends AbstractBotEvents {
               secs: cooldownSecs,
             }),
           )
-          // Clean up the chat history by deleting the cooldown warning and the user's command
           .then((r) =>
             deleteMessageAfter(cooldownSecs * 1000, ctx, r.message_id, 'BotWolEvents'),
           )
@@ -86,7 +85,7 @@ export class BotWolEvents extends AbstractBotEvents {
       // Validate the requested device exists and the user is authorized for it
       const device = configService
         .getDevicesByAuthorizedTelUsername(ctx.from?.username)
-        .find((d) => d.nameId === ctx.payload);
+        .find((d) => d.nameId.toLocaleLowerCase() === ctx.payload.toLocaleLowerCase());
       if (!device) {
         ctx.reply(ctx.state.t('telegram_bot.error.device_not_found_in_config'));
         return;
@@ -152,6 +151,13 @@ export class BotWolEvents extends AbstractBotEvents {
       }
 
       // --- Wake-on-LAN process ---
+      // Ping to check if device is already waked (no WoL needed)
+      if (device.ipAddress && await wolService.isDeviceAwake(device.ipAddress)) {
+        ctx.answerCbQuery(
+          ctx.state.t('telegram_bot.wol.device_awaked', { device: device.nameId })
+        );
+        return;
+      }
       try {
         await wolService.wakeDevice(device.macAddress);
         await ctx.answerCbQuery(
@@ -188,7 +194,6 @@ export class BotWolEvents extends AbstractBotEvents {
         let attempts = 0;
 
         const pingInterval = setInterval(() => {
-          console.log(`[BotWolEvents] Pinging device with IP '${device.ipAddress}'`);
           wolService.isDeviceAwake(device.ipAddress).then((pingResult) => {
             if (!pingResult) {
               if (++attempts >= maxAttempts) {
@@ -237,13 +242,14 @@ export class BotWolEvents extends AbstractBotEvents {
 
   /** Helper method to display available commands */
   private replyCommands(ctx: Context) {
-    ctx.reply(
-      `${ctx.state.t('telegram_bot.global.available_commands')}\n\n` +
-        `${ctx.state.t('telegram_bot.global.command_description.start')}\n` +
-        `${ctx.state.t('telegram_bot.global.command_description.devices')}\n` +
-        `${ctx.state.t('telegram_bot.global.command_description.ping')}\n` +
-        `${ctx.state.t('telegram_bot.global.command_description.help')}`,
-    );
+    let replyMessage = `${ctx.state.t('telegram_bot.global.available_commands')}\n\n`
+
+    const allowedCommands = configService.getCommandsAllowedByTelUsername(ctx.from?.username);
+    for (const command of allowedCommands) {
+      if (command === 'debug') continue;
+      replyMessage += `${ctx.state.t('telegram_bot.global.command_description.' + command)}\n`;
+    }
+    ctx.reply(replyMessage);
   }
 
   /** Helper method to generate inline buttons for each authorized device */
