@@ -2,7 +2,7 @@
     "telegram_bot": {
         "global": {
             "info_get_new_session_message": "💡 Escribe /start para obtener un mensaje actualizado",
-            "command_on_cooldown": "Comando /{{command}} en enfriamiento durante {{secs}}s ⌛",
+            "command_on_cooldown": "⌛ Comando /{{command}} en enfriamiento durante {{secs}}s",
             "available_commands": "Comandos disponibles 🛠️",
             "command_description": {
                 "start": "/start - iniciar el bot",
@@ -10,7 +10,8 @@
                 "ping": "/ping {dispositivo} - ping al dispositivo",
                 "help": "/help - comandos disponibles",
                 "reload": "/reload - recarga config.json5"
-            }
+            },
+            "config_successfully_reloaded": "✅ Configuración recargada correctamente"
         },
         "error": {
             "invalid_command": "❌ Comando no válido, escribe /start para iniciar",
@@ -18,14 +19,15 @@
             "no_ip_for_device_in_config": "❌ No hay una IP para poder hacer ping en ese dispositivo",
             "device_not_found_in_config": "❌ Dispositivo no encontrado en la configuración",
             "other_session_button": "❌ Este mensaje es de otra sesión y está desactualizado",
-            "sending_magic_packet_failed": "❌ Error al intentar enviar la señal WoL"
+            "sending_magic_packet_failed": "❌ Error al intentar enviar la señal WoL",
+            "config_not_reloaded": "❌ Error al recargar la configuración. Se sigue usando la anterior"
         },
         "wol": {
-            "select_wake_device": "Pulsa en el equipo que desea encender 🛎️",
+            "select_wake_device": "🛎️ Pulsa en el equipo que desea encender",
             "device": "🖥️ {{device}}",
             "magic_packet_sended": "✅ Magic Packet enviado a {{device}}",
-            "pinging_device": "Esperando a que {{device}} responda... ⌛",
-            "device_awaked": "{{device}} ya está encendido ⚡",
+            "pinging_device": "⌛ Esperando a que {{device}} responda...",
+            "device_awaked": "⚡ {{device}} ya está encendido",
             "device_is_waking": "⚠️ {{device}} se está encendiendo",
             "ping_failed": "{{device}} no ha respondido 😕"
         }

@@ -4,3 +4,4 @@ node_modules
 dist
 .env
 config.dev.json5
+.vscode

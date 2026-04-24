@@ -2,7 +2,7 @@
     "telegram_bot": {
         "global": {
             "info_get_new_session_message": "💡 Type /start to get an updated message",
-            "command_on_cooldown": "Command /{{command}} on cooldown for {{secs}}s ⌛",
+            "command_on_cooldown": "⌛ Command /{{command}} on cooldown for {{secs}}s",
             "available_commands": "Available commands 🛠️",
             "command_description": {
                 "start": "/start - start the bot",
@@ -18,14 +18,15 @@
             "no_ip_for_device_in_config": "❌ No IP available to ping that device",
             "device_not_found_in_config": "❌ Device not found in the configuration",
             "other_session_button": "❌ This message is from another session and is outdated",
-            "sending_magic_packet_failed": "❌ Error trying to send the WoL signal"
+            "sending_magic_packet_failed": "❌ Error trying to send the WoL signal",
+            "config_not_reloaded": "❌ Failed to reload configuration. Still using the previous one"
         },
         "wol": {
-            "select_wake_device": "Tap on the device you want to wake up 🛎️",
+            "select_wake_device": "🛎️ Tap on the device you want to wake up",
             "device": "🖥️ {{device}}",
             "magic_packet_sended": "✅ Magic Packet sent to {{device}}",
-            "pinging_device": "Waiting for {{device}} to respond... ⌛",
-            "device_awaked": "{{device}} is already awake ⚡",
+            "pinging_device": "⌛ Waiting for {{device}} to respond...",
+            "device_awaked": "⚡ {{device}} is already awake ",
             "device_is_waking": "⚠️ {{device}} is waking up",
             "ping_failed": "{{device}} has not responded 😕"
         }

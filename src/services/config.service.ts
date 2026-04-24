@@ -64,22 +64,26 @@ class ConfigService {
     }
     this.validateConfig();
 
-    console.log('Config loaded');
+    console.log('[ConfigService] Config loaded');
   }
 
   /**
    * It does the same than `loadConfig`, but it rollbacks the saved config
    * if it was an error.
+   * @throws the error it occurred. Recommended to be controlled
    */
   reloadConfig() {
     if (!this.userConfig)
       throw new Error('Can not reload config because config is not loaded yet');
+
+    console.log('[ConfigService] Reloading config...');
     const safeConfig = this.userConfig;
     try {
       this.loadConfig();
     } catch (error) {
       console.error('Error occurred while loading new config:', error);
       this.userConfig = safeConfig;
+      throw error;
     }
   }
 
