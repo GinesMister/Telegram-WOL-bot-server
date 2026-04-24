@@ -68,6 +68,22 @@ class ConfigService {
   }
 
   /**
+   * It does the same than `loadConfig`, but it rollbacks the saved config
+   * if it was an error.
+   */
+  reloadConfig() {
+    if (!this.userConfig)
+      throw new Error('Can not reload config because config is not loaded yet');
+    const safeConfig = this.userConfig;
+    try {
+      this.loadConfig();
+    } catch (error) {
+      console.error('Error occurred while loading new config:', error);
+      this.userConfig = safeConfig;
+    }
+  }
+
+  /**
    * Internal method to verify that all provided MACs, IPs, Usernames, and Commands
    * are correctly formatted. Prevents the bot from trying to wake invalid targets.
    */

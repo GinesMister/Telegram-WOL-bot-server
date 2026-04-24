@@ -4,6 +4,7 @@ export const telCommands = {
   devices: 'devices',
   ping: 'ping',
   debug: 'debug',
+  reload: 'reload',
 } as const;
 
 export type TelCommandValue = (typeof telCommands)[keyof typeof telCommands];

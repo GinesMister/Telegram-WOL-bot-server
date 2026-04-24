@@ -4,7 +4,7 @@ import wolService from '../../../services/wol.service';
 import authService from '../../../services/auth.service';
 import configService from '../../../services/config.service';
 import { deleteMessage, deleteMessageAfter } from '../../../util/tel-messages.util';
-import { telCommands } from '../../../constants/tel-commands.const';
+import { telCommands, TelCommandValue } from '../../../constants/tel-commands.const';
 
 /**
  * Implements the specific Telegram commands and button actions
@@ -66,19 +66,9 @@ export class BotWolEvents extends AbstractBotEvents {
       this.logEvent(telCommands.ping);
 
       // Check if the command is on cooldown
-      const cooldownSecs = this.checkDelayedCommand(telCommands.ping);
-      if (cooldownSecs > 0) {
-        ctx
-          .reply(
-            ctx.state.t('telegram_bot.global.command_on_cooldown', {
-              command: telCommands.ping,
-              secs: cooldownSecs,
-            }),
-          )
-          .then((r) =>
-            deleteMessageAfter(cooldownSecs * 1000, ctx, r.message_id, 'BotWolEvents'),
-          )
-          .then(() => deleteMessage(ctx, ctx.message.message_id, 'BotWolEvents'));
+      const commandCooldownSecs = this.checkDelayedCommand(telCommands.ping);
+      if (commandCooldownSecs > 0) {
+        this.replyDelayedCommand(telCommands.ping, commandCooldownSecs, ctx);
         return;
       }
 
@@ -152,9 +142,9 @@ export class BotWolEvents extends AbstractBotEvents {
 
       // --- Wake-on-LAN process ---
       // Ping to check if device is already waked (no WoL needed)
-      if (device.ipAddress && await wolService.isDeviceAwake(device.ipAddress)) {
+      if (device.ipAddress && (await wolService.isDeviceAwake(device.ipAddress))) {
         ctx.answerCbQuery(
-          ctx.state.t('telegram_bot.wol.device_awaked', { device: device.nameId })
+          ctx.state.t('telegram_bot.wol.device_awaked', { device: device.nameId }),
         );
         return;
       }
@@ -164,8 +154,7 @@ export class BotWolEvents extends AbstractBotEvents {
           ctx.state.t('telegram_bot.wol.magic_packet_sended', { device: device.nameId }),
         );
         this.wakingDevices.push(device.nameId);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (error: any) {
+      } catch (error) {
         console.error(error);
         await ctx.answerCbQuery(
           ctx.state.t('telegram_bot.error.sending_magic_packet_failed'),
@@ -242,9 +231,11 @@ export class BotWolEvents extends AbstractBotEvents {
 
   /** Helper method to display available commands */
   private replyCommands(ctx: Context) {
-    let replyMessage = `${ctx.state.t('telegram_bot.global.available_commands')}\n\n`
+    let replyMessage = `${ctx.state.t('telegram_bot.global.available_commands')}\n\n`;
 
-    const allowedCommands = configService.getCommandsAllowedByTelUsername(ctx.from?.username);
+    const allowedCommands = configService.getCommandsAllowedByTelUsername(
+      ctx.from?.username,
+    );
     for (const command of allowedCommands) {
       if (command === 'debug') continue;
       replyMessage += `${ctx.state.t('telegram_bot.global.command_description.' + command)}\n`;
@@ -272,5 +263,26 @@ export class BotWolEvents extends AbstractBotEvents {
       ctx.state.t('telegram_bot.wol.select_wake_device'),
       Markup.inlineKeyboard(buttons),
     );
+  }
+
+  private replyDelayedCommand(
+    command: TelCommandValue,
+    cooldownSecs: number,
+    ctx: Context,
+  ) {
+    if (cooldownSecs > 0) {
+      ctx
+        .reply(
+          ctx.state.t('telegram_bot.global.command_on_cooldown', {
+            command: command,
+            secs: cooldownSecs,
+          }),
+        )
+        .then((r) =>
+          deleteMessageAfter(cooldownSecs * 1000, ctx, r.message_id, 'BotWolEvents'),
+        )
+        .then(() => deleteMessage(ctx, ctx.message!.message_id, 'BotWolEvents'));
+      return;
+    }
   }
 }

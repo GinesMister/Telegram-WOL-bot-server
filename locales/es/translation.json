@@ -8,7 +8,8 @@
                 "start": "/start - iniciar el bot",
                 "devices": "/devices - dispositivos para encender",
                 "ping": "/ping {dispositivo} - ping al dispositivo",
-                "help": "/help - comandos disponibles"
+                "help": "/help - comandos disponibles",
+                "reload": "/reload - recarga config.json5"
             }
         },
         "error": {

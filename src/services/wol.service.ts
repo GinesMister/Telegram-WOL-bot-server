@@ -14,7 +14,7 @@ class WolService {
    */
   async wakeDevice(macAddress: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      console.log(`[WolService] Sending magic packet to '${macAddress}'`)
+      console.log(`[WolService] Sending magic packet to '${macAddress}'`);
       wol.wake(macAddress, (error) => {
         if (error) {
           reject(
@@ -36,7 +36,7 @@ class WolService {
    */
   async isDeviceAwake(ipAddress: string): Promise<boolean> {
     if (!ipAddress) return false;
-    console.log(`[WolService] Pinging device with IP '${ipAddress}'`)
+    console.log(`[WolService] Pinging device with IP '${ipAddress}'`);
     try {
       const res = await ping.promise.probe(ipAddress, {
         timeout: 2,
