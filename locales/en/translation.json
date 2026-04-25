@@ -1,7 +1,7 @@
 {
     "telegram_bot": {
         "global": {
-            "info_get_new_session_message": "💡 Type /start to get an updated message",
+            "info_get_new_session_message": "💡 Type /devices to get an updated message",
             "command_on_cooldown": "⌛ Command /{{command}} on cooldown for {{secs}}s",
             "available_commands": "Available commands 🛠️",
             "command_description": {
@@ -10,7 +10,8 @@
                 "ping": "/ping {device} - ping the device",
                 "help": "/help - available commands",
                 "reload": "/reload - reload config.json5"
-            }
+            },
+            "config_successfully_reloaded": "✅ Configuration successfully reloaded"
         },
         "error": {
             "invalid_command": "❌ Invalid command, type /start to start",

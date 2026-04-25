@@ -121,11 +121,9 @@ export class BotWolEvents extends AbstractBotEvents {
 
       try {
         configService.reloadConfig();
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (ignoreError) {
-        ctx.reply(
-          ctx.state.t('telegram_bot.error.config_not_reloaded'),
-        );
+        ctx.reply(ctx.state.t('telegram_bot.error.config_not_reloaded'));
         return;
       }
 

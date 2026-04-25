@@ -100,7 +100,17 @@ class ConfigService {
     // --- Device Validation ---
 
     // Ensure no two devices share the same ID, preventing command conflicts
-    if (!validateUniqueValues(this.userConfig.devices.map((d) => d.nameId)))
+    for (const nameId of this.userConfig.devices.map((d) => d.nameId)) {
+      if (nameId.trim() !== nameId)
+        throw new Error(
+          `${this.baseConfigValidationErrMsg} nameId must not contain whitespaces`,
+        );
+    }
+    if (
+      !validateUniqueValues(
+        this.userConfig.devices.map((d) => d.nameId.toLocaleLowerCase()),
+      )
+    )
       throw new Error(
         `${this.baseConfigValidationErrMsg} nameId of devices must be uniques`,
       );
