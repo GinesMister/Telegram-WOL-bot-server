@@ -129,7 +129,7 @@ class ConfigService {
       // IP address is optional (will be used to ping), but if provided, must be valid
       if (device.ipAddress && !validateIpAddress(device.ipAddress))
         throw new Error(
-          `${this.baseConfigValidationErrMsg} devices.ipAddress '${device.ipAddress ?? ''}' not valid or missing. Valid example: '192.168.1.53'`,
+          `${this.baseConfigValidationErrMsg} devices.ipAddress '${device.ipAddress ?? ''}' not valid. Valid example: '192.168.1.53'`,
         );
 
       // Check that the usernames allowed to wake this specific device are correctly formatted
