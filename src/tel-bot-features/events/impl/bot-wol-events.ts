@@ -193,6 +193,7 @@ export class BotWolEvents extends AbstractBotEvents {
             show_alert: true,
           },
         );
+        return;
       }
 
       // --- Auto-ping ---

@@ -29,7 +29,7 @@
             allowedTelegramUsernames: ['all'],
         },
         {
-            command: 'reload',
+            command: '/reload',
             cooldownSecs: 40,
             allowedTelegramUsernames: ['all'],
         },
