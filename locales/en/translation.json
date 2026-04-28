@@ -7,7 +7,7 @@
             "command_description": {
                 "start": "/start - start the bot",
                 "devices": "/devices - devices to wake up",
-                "ping": "/ping {device} - ping the device",
+                "ping": "/ping <device> - ping the device",
                 "help": "/help - available commands",
                 "reload": "/reload - reload config.json5"
             },
