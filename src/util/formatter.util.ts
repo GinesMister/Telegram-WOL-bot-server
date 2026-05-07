@@ -22,3 +22,10 @@ export const parseToStringArray = (input: string | undefined): string[] => {
 
   return result;
 };
+
+/**
+ * Extracts the description after the '- ' separator.
+ */
+export const formatCommandDescription = (input: string): string => {
+  return input.split('- ')[1]?.trim() ?? '';
+};

@@ -24,6 +24,7 @@ export abstract class AbstractBotEvents {
     this.bot = bot;
     // Generate a fresh UUID for this runtime session
     this.eventSession = randomUUID();
+    this.setMyCommands();
     this.onInit();
   }
 
@@ -33,6 +34,8 @@ export abstract class AbstractBotEvents {
   protected abstract onInit(): void;
 
   protected abstract startEvent(): void;
+
+  protected abstract setMyCommands(): void;
 
   abstract deployActionsAndEvents(): void;
 

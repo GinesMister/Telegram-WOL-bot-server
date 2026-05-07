@@ -10,6 +10,8 @@ import {
   replyDelayedCommand,
 } from '../../../util/tel-messages.util';
 import { telCommands } from '../../../constants/tel-commands.const';
+import { formatCommandDescription } from '../../../util/formatter.util';
+import translationService from '../../../services/translation.service';
 
 /**
  * Implements the specific Telegram commands and button actions
@@ -29,6 +31,57 @@ export class BotWolEvents extends AbstractBotEvents {
     for (const userId of authService.authorizedTeluserIds) {
       this.bot.telegram.sendMessage(userId, this.userConfig.initMessage);
     }
+  }
+
+  /**
+   * Set Telegram bot menu commands.
+   */
+  protected setMyCommands(): void {
+    this.bot.telegram
+      .setMyCommands([
+        {
+          command: telCommands.start,
+          description: formatCommandDescription(
+            translationService.t('telegram_bot.global.command_description.start'),
+          ),
+        },
+        {
+          command: telCommands.devices,
+          description: formatCommandDescription(
+            translationService.t('telegram_bot.global.command_description.devices'),
+          ),
+        },
+        {
+          command: telCommands.ping,
+          description: formatCommandDescription(
+            translationService.t('telegram_bot.global.command_description.ping'),
+          ),
+        },
+        {
+          command: telCommands.help,
+          description: formatCommandDescription(
+            translationService.t('telegram_bot.global.command_description.help'),
+          ),
+        },
+        {
+          command: telCommands.reload,
+          description: formatCommandDescription(
+            translationService.t('telegram_bot.global.command_description.reload'),
+          ),
+        },
+        {
+          command: telCommands.wake,
+          description: formatCommandDescription(
+            translationService.t('telegram_bot.global.command_description.wake'),
+          ),
+        },
+      ])
+      .then(() => {
+        this.logEvent('setMyCommands');
+      })
+      .catch((error) => {
+        console.error('[BotWolEvents] Error setting bot commands', error);
+      });
   }
 
   /**
