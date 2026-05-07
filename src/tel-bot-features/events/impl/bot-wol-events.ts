@@ -4,6 +4,7 @@ import wolService from '../../../services/wol.service';
 import authService from '../../../services/auth.service';
 import configService from '../../../services/config.service';
 import {
+  answerCtx,
   deleteMessage,
   deleteMessageAfter,
   replyDelayedCommand,
@@ -142,7 +143,7 @@ export class BotWolEvents extends AbstractBotEvents {
         return;
       }
 
-      this.wakeDeviceProcess(ctx, ctx.payload.toLocaleLowerCase());
+      this.wakeDeviceProcess(ctx, ctx.payload.toLocaleLowerCase(), 'reply');
     });
   }
 
@@ -166,7 +167,7 @@ export class BotWolEvents extends AbstractBotEvents {
         });
       }
 
-      this.wakeDeviceProcess(ctx, requestedNameId);
+      this.wakeDeviceProcess(ctx, requestedNameId, 'answerCbQuery');
     });
   }
 
@@ -177,7 +178,11 @@ export class BotWolEvents extends AbstractBotEvents {
   /**
    * Handles all WoL process.
    */
-  private async wakeDeviceProcess(ctx: Context, deviceNameIdToWake: string) {
+  private async wakeDeviceProcess(
+    ctx: Context,
+    deviceNameIdToWake: string,
+    typeResponse: 'answerCbQuery' | 'reply',
+  ) {
     // Check user can really wake device
     const device = configService
       .getDevicesByAuthorizedTelUsername(ctx.from?.username)
@@ -185,17 +190,22 @@ export class BotWolEvents extends AbstractBotEvents {
         (d) => d.nameId.toLocaleLowerCase() === deviceNameIdToWake.toLocaleLowerCase(),
       );
     if (!device) {
-      return ctx.answerCbQuery(
+      answerCtx(
+        ctx,
         ctx.state.t('telegram_bot.error.device_not_found_in_config'),
+        typeResponse,
         {
           show_alert: true,
         },
       );
+      return;
     }
 
     if (this.wakingDevices.find((d) => d === device.nameId)) {
-      ctx.answerCbQuery(
+      answerCtx(
+        ctx,
         ctx.state.t('telegram_bot.wol.device_is_waking', { device: device.nameId }),
+        typeResponse,
       );
       return;
     }
@@ -203,21 +213,27 @@ export class BotWolEvents extends AbstractBotEvents {
     // --- Wake-on-LAN process ---
     // Ping to check if device is already waked (no WoL needed)
     if (device.ipAddress && (await wolService.isDeviceAwake(device.ipAddress))) {
-      ctx.answerCbQuery(
+      answerCtx(
+        ctx,
         ctx.state.t('telegram_bot.wol.device_awaked', { device: device.nameId }),
+        typeResponse,
       );
       return;
     }
     try {
       await wolService.wakeDevice(device.macAddress);
-      await ctx.answerCbQuery(
+      await answerCtx(
+        ctx,
         ctx.state.t('telegram_bot.wol.magic_packet_sended', { device: device.nameId }),
+        typeResponse,
       );
       this.wakingDevices.push(device.nameId);
     } catch (error) {
       console.error(error);
-      await ctx.answerCbQuery(
+      await answerCtx(
+        ctx,
         ctx.state.t('telegram_bot.error.sending_magic_packet_failed'),
+        typeResponse,
         {
           show_alert: true,
         },

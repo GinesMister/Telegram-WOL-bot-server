@@ -46,3 +46,13 @@ export const replyDelayedCommand = (
     return;
   }
 };
+
+export const answerCtx = async (
+  ctx: Context,
+  message: string,
+  typeAnswer: 'answerCbQuery' | 'reply',
+  cbQueryExtraData = {},
+) => {
+  if (typeAnswer === 'answerCbQuery') await ctx.answerCbQuery(message, cbQueryExtraData);
+  if (typeAnswer === 'reply') await ctx.reply(message);
+};
