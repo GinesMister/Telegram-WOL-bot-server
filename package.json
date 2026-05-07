@@ -1,6 +1,6 @@
 {
   "name": "telegram-wol-bot",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Remotely wake up computers on a local network using Telegram commands, secured by user ID validation.",
   "main": "dist/src/index.js",
   "scripts": {
