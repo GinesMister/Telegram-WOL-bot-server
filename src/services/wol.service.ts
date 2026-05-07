@@ -14,6 +14,7 @@ class WolService {
    */
   async wakeDevice(macAddress: string): Promise<void> {
     return new Promise((resolve, reject) => {
+      console.log(`[WolService] Sending magic packet to '${macAddress}'`);
       wol.wake(macAddress, (error) => {
         if (error) {
           reject(
@@ -30,13 +31,12 @@ class WolService {
 
   /**
    * Pings a specific IP address to check if the machine is currently online.
-   * This is highly useful for confirming if a `wakeDevice` call was successful,
-   * or letting users check the status of a machine before trying to wake it.
    * @param ipAddress - The local IP address of the target machine.
    * @returns A boolean: true if the device responds to ping, false otherwise.
    */
   async isDeviceAwake(ipAddress: string): Promise<boolean> {
     if (!ipAddress) return false;
+    console.log(`[WolService] Pinging device with IP '${ipAddress}'`);
     try {
       const res = await ping.promise.probe(ipAddress, {
         timeout: 2,

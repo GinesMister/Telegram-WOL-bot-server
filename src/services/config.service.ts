@@ -64,7 +64,27 @@ class ConfigService {
     }
     this.validateConfig();
 
-    console.log('Config loaded');
+    console.log('[ConfigService] Config loaded');
+  }
+
+  /**
+   * It does the same than `loadConfig`, but it rollbacks the saved config
+   * if it was an error.
+   * @throws the error it occurred. Recommended to be controlled
+   */
+  reloadConfig() {
+    if (!this.userConfig)
+      throw new Error('Can not reload config because config is not loaded yet');
+
+    console.log('[ConfigService] Reloading config...');
+    const safeConfig = this.userConfig;
+    try {
+      this.loadConfig();
+    } catch (error) {
+      console.error('Error occurred while loading new config:', error);
+      this.userConfig = safeConfig;
+      throw error;
+    }
   }
 
   /**
@@ -80,7 +100,17 @@ class ConfigService {
     // --- Device Validation ---
 
     // Ensure no two devices share the same ID, preventing command conflicts
-    if (!validateUniqueValues(this.userConfig.devices.map((d) => d.nameId)))
+    for (const nameId of this.userConfig.devices.map((d) => d.nameId)) {
+      if (nameId.trim() !== nameId)
+        throw new Error(
+          `${this.baseConfigValidationErrMsg} nameId must not contain whitespaces`,
+        );
+    }
+    if (
+      !validateUniqueValues(
+        this.userConfig.devices.map((d) => d.nameId.toLocaleLowerCase()),
+      )
+    )
       throw new Error(
         `${this.baseConfigValidationErrMsg} nameId of devices must be uniques`,
       );
@@ -99,7 +129,7 @@ class ConfigService {
       // IP address is optional (will be used to ping), but if provided, must be valid
       if (device.ipAddress && !validateIpAddress(device.ipAddress))
         throw new Error(
-          `${this.baseConfigValidationErrMsg} devices.ipAddress '${device.ipAddress ?? ''}' not valid or missing. Valid example: '192.168.1.53'`,
+          `${this.baseConfigValidationErrMsg} devices.ipAddress '${device.ipAddress ?? ''}' not valid. Valid example: '192.168.1.53'`,
         );
 
       // Check that the usernames allowed to wake this specific device are correctly formatted
