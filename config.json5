@@ -24,19 +24,14 @@
         {
             command: '/ping',
             // In seconds
-            cooldownSecs: 10,
+            cooldownSecs: 5,
             // Telegram usernames allowed to execute this command. Starts with `@`. 'all' allows all. Can be empty
             allowedTelegramUsernames: ['all'],
         },
         {
             command: '/reload',
-            cooldownSecs: 40,
+            cooldownSecs: 5,
             allowedTelegramUsernames: ['all'],
-        },
-        {
-            command: '/debug',
-            cooldownSecs: 0,
-            allowedTelegramUsernames: [''],
         },
     ],
 }
