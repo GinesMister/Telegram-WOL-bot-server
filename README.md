@@ -71,6 +71,7 @@ This is a Telegram bot built with Node.js and TypeScript that allows you to remo
 * `/help` - Lists all available commands with descriptions based on user permissions.
 * `/devices` - Shows the inline keyboard with buttons to wake authorized devices.
 * `/ping <device_nameId>` - Manually checks if a device is online using its IP address.
+* `/wake <device_nameId>` - Manually send a magic packet to wake the device.
 * `/reload` - Reloads the configuration file without downtime.
 
 ## Technical Architecture

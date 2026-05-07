@@ -9,7 +9,8 @@
                 "devices": "/devices - dispositivos para encender",
                 "ping": "/ping <dispositivo> - ping al dispositivo",
                 "help": "/help - comandos disponibles",
-                "reload": "/reload - recarga config.json5"
+                "reload": "/reload - recarga config.json5",
+                "wake": "/wake <dispositivo> - enciende el dispositivo"
             },
             "config_successfully_reloaded": "✅ Configuración recargada correctamente"
         },

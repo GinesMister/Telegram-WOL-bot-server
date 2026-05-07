@@ -2,6 +2,7 @@ export const telCommands = {
   start: 'start',
   help: 'help',
   devices: 'devices',
+  wake: 'wake',
   ping: 'ping',
   debug: 'debug',
   reload: 'reload',

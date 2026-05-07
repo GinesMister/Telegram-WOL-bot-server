@@ -9,7 +9,8 @@
                 "devices": "/devices - devices to wake up",
                 "ping": "/ping <device> - ping the device",
                 "help": "/help - available commands",
-                "reload": "/reload - reload config.json5"
+                "reload": "/reload - reload config.json5",
+                "wake": "/wake <device> - wake the device"
             },
             "config_successfully_reloaded": "✅ Configuration successfully reloaded"
         },
