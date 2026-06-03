@@ -1,5 +1,4 @@
-import 'dotenv/config';
-import { DEFAULT_CONFIG_ROUTE_FILE } from '../constants/relative-routes.const';
+import { DEFAULT_CONFIG_ROUTE_FILE, getAppDir } from '../constants/relative-routes.const';
 import { UserConfig } from '../types/user-config.type';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -42,7 +41,7 @@ class ConfigService {
     }
     try {
       const fileContent = fs.readFileSync(
-        path.join(__dirname, '/../', this.configPath),
+        path.join(getAppDir(), this.configPath),
         'utf-8',
       );
       this.userConfig = JSON5.parse(fileContent) as UserConfig;

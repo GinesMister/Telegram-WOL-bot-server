@@ -10,7 +10,9 @@
     "build:cpAssets": "npm run build:cpConfig && npm run build:cpLocales",
     "build:cpConfig": "copyfiles -u 0 \"config.json5\" dist/",
     "build:cpLocales": "copyfiles -u 0 locales/**/* dist",
+    "build:bun": "bun build --compile src/index.ts --outfile dist/telegram-wol-bot",
     "start": "node dist/src/index.js",
+    "start:bun": "./dist/telegram-wol-bot",
     "start:limitedMemory": "node --max-old-space-size=100 dist/src/index.js",
     "lint": "node --permission --allow-fs-read=* ./node_modules/eslint/bin/eslint.js src/",
     "format": "node --permission --allow-fs-read=* --allow-fs-write=* ./node_modules/prettier/bin/prettier.cjs --write \"src/**/*.{ts,json}\""
@@ -34,6 +36,7 @@
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
+    "@types/bun": "1.3.14",
     "@types/node": "25.5.0",
     "@types/wake_on_lan": "0.0.33",
     "copyfiles": "2.4.1",

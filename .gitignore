@@ -1,5 +1,7 @@
 package-lock.json
 pnpm-lock.yaml
+skills-lock.json
+.agents/
 node_modules
 dist
 .env

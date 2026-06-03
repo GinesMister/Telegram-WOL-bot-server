@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import { parseToNumericArray } from '../util/formatter.util';
 
 /**

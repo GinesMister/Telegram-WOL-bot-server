@@ -1,8 +1,7 @@
-import 'dotenv/config';
 import i18next, { TOptions } from 'i18next';
 import Backend from 'i18next-fs-backend';
 import path from 'path';
-import { DEFAULT_TRANSLATION_ROUTE_FOLDER } from '../constants/relative-routes.const';
+import { DEFAULT_TRANSLATION_ROUTE_FOLDER, getAppDir } from '../constants/relative-routes.const';
 import { parseToStringArray } from '../util/formatter.util';
 
 /**
@@ -30,8 +29,7 @@ class TranslationService {
       preload: botLanguages,
       backend: {
         loadPath: path.join(
-          __dirname,
-          '/../', // go where index.js/ts is
+          getAppDir(),
           process.env.TRANSLATION_ROUTE_FOLDER || DEFAULT_TRANSLATION_ROUTE_FOLDER,
           '/{{lng}}/{{ns}}.json',
         ),

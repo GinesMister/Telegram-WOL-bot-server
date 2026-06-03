@@ -1,8 +1,10 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
 import configService from './services/config.service';
 import translationService from './services/translation.service';
 import { BotHandler } from './tel-bot-features/bot-handler';
 import { BotWolEvents } from './tel-bot-features/events/impl/bot-wol-events';
+
+dotenv.config();
 
 configService.loadConfig();
 

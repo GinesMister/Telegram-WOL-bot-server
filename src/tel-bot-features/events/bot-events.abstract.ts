@@ -1,5 +1,4 @@
 import { Telegraf } from 'telegraf';
-import 'dotenv/config';
 import { randomUUID } from 'node:crypto';
 import { UserConfig } from '../../types/user-config.type';
 import configService from '../../services/config.service';
